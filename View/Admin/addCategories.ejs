@@ -1,0 +1,144 @@
+<%- include('../layouts/adminHeader.ejs')%>
+  <!-- ============================================================== -->
+  <!-- Page wrapper  -->
+  <!-- ============================================================== -->
+  <br>
+  <br>
+  <div class="container" style="padding-left: 280px;">
+    <link rel="stylesheet" href="/css/style (3).css">
+
+    <div>
+      <h2 class="category-heading">Add Category</h2>
+
+
+    </div>
+
+    <div class="main-content">
+      <form onsubmit="return validateForm();" action="/admin/categoryAdd" method="post" enctype="multipart/form-data">
+        <div class="category-form">
+          <span class="formerror text-danger" id="category-info"></span><br><span class="label-input100" strong
+            style="color:black">CATEGORY</span><br>
+          <input type="text" name="categoryName" id="categoryName" class="category-input" placeholder="Category Name"
+            onkeyup="validateCategory()"><br><br><br>
+
+
+          <span class="formerror text-danger" id="offer-info"></span><br><span class="label-input100" strong
+            style="color:black">CATEGORY OFFER</span><br>
+          <input type="text" name="categoryOffer" id="categoryOffer" class="category-input" placeholder="Category offer"
+            onkeyup="validateOffer()"><br><br><br>
+
+          <div class="m-4">
+                <label style="color: #fff; font-weight: 300;">Upload Images</label><br>
+                <span class="label-input100" strong style="color:black">CATEGORY IMAGE</span>
+                <input type="file" class="form-control-file custom-file-input" id="preview-image" name="productImage" onchange="previewImage(event)" style="opacity:100" multiple>
+              </div> 
+          <button type="submit" class="btn btn-primary category-btn">Add</button>
+        </div>
+
+        <span>
+          <p style="color: green"></p>
+          <% if(typeof successMessage!=='undefined' ){ %>
+            <p style="color:green"><%- successMessage %></p>
+            <% } if(typeof errorMessage!=='undefined' ){ %>
+              <p style="color:red"><%- errorMessage %></p>
+              <% } %>
+        </span>
+      </form>
+
+
+
+    </div>
+
+
+    <!-- 
+<footer class="footer text-center"> 2021 © Ample Admin brought to you by <a
+    href="https://www.wrappixel.com/">wrappixel.com</a>
+</footer> -->
+    <!-- ============================================================== -->
+    <!-- End footer -->
+    <!-- ============================================================== -->
+  </div>
+  <!-- ============================================================== -->
+  <!-- End Page wrapper  -->
+
+  <script>
+    function previewImage(event){
+      const previewImages=document.getElementById('preview-image')
+      for(let i=0;i<event.target.files.length;i++){
+        const file=event.target.files[i]
+        const reader=new FileReader()
+        reader.onload=function(e){
+          previewImages[i].src=e.target.result
+        }
+        reader.readAsDataURL(file)
+      }
+    }
+  </script>
+  <%- include('../layouts/adminFooter.ejs')%>
+
+
+    <script>
+      var categoryError = document.getElementById("category-info");
+      var offerError = document.getElementById("offer-info");
+
+      function validateCategory() {
+        var category = document.getElementById("categoryName").value.trim();
+
+        if (category.length === 0) {
+          categoryError.innerHTML = "Category Name is required";
+          return false;
+        }
+
+        if (!category.replace(/\s/g, "").length) {
+          categoryError.innerHTML = "Category Name cannot be just spaces";
+          return false;
+        } else {
+          categoryError.innerHTML = "";
+          return true;
+        }
+      }
+
+      function validateOffer() {
+        var offer = document.getElementById("categoryOffer").value.trim();
+
+        if (offer.length === 0) {
+          offerError.innerHTML = "Category Offer is required";
+          return false;
+        }
+
+        // Other offer validation checks
+        else {
+          offerError.innerHTML = "";
+          return true;
+        }
+      }
+
+      function validateForm() {
+        if (
+          !validateCategory() &&
+          !validateOffer()
+        ) {
+          submitError.style.direction = "block";
+          submitError.innerHTML = "Please Fix the errors to Register";
+          event.preventDefault();
+          setTimeout(function () {
+            submitError.style.display = "none ";
+          }, 3000);
+          return false;
+        } else if (
+          !validateCategory() ||
+          !validateOffer()
+
+        ) {
+          submitError.style.direction = "block";
+          submitError.innerHTML = "Please Enter All Required Fields to Register";
+          event.preventDefault();
+          setTimeout(function () {
+            submitError.style.display = "none ";
+          }, 3000);
+          return false;
+        }
+      }
+
+
+    </script>

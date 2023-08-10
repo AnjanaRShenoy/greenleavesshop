@@ -1,0 +1,91 @@
+<%- include('../layouts/adminHeader.ejs')%>
+        <!-- ============================================================== -->
+        <!-- Page wrapper  -->
+        <!-- ============================================================== -->
+    <br>
+    <br>
+        <div class="container" style="padding-left: 150px;">
+            
+            
+            <!-- <section class="ftco-section">
+                <div class="input-group rounded">
+                    <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+                    <span class="input-group-text border-0" id="search-addon">
+                      <i class="fas fa-search"></i>
+                    </span>
+                  </div>
+            </section> -->
+            <a class="btn btn-primary" href="/admin/addProducts" role="button">Add products</a>
+            <br>
+            <br>
+            <br>
+                <div class="container" style="border-color: black;">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 text-center mb-5">
+                            <h2 class="heading-section">Product list</h2>
+                        </div>
+                    </div>
+                </div>
+                
+        <div class="row" >
+            <!-- <div class="col-md-12">
+                <h4 class="text-center mb-4"></h4> -->
+                <div class="table-wrap">
+                    <table class="table" style="border-color: black;">
+                    <thead class="thead-primary">
+                      <tr>
+                        <th scope="col"></th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Description</th>
+                      <th scope="col">Category</th>
+                      <th scope="col">Price</th>
+                      <th scope="col">Kg</th>
+                      
+                      <th scope="col">Image</th>
+                      <th scope="col">Action</th>
+                        <!-- <th>Status</th>  -->
+                      </tr>
+                    </thead>
+                    <tbody>
+                        
+                            <% product.forEach(function(item) {%>
+                        <tr>
+                          <td></td>
+                          <td><%= item.productName%></td>
+                          <td><%= item.productDescription%></td>
+                          <td><%= item.categoryName %></td>
+                          <td><%= item.price %></td>
+                          <td><%= item.kg %></td>
+                         
+                          <td> <img src="/images/<%= item.productImage[0] %>" height="50px"/></td>
+                          
+                          <% if(item.productBlock==true){ %>
+                            <td>
+                                
+                              <div class="btn bg-secondary">
+                                <a class="text-light text-decoration-none unblock-link" href="/admin/undeleteproduct?id=<%= item._id %>">Unblock</a>
+                              </div>
+                            </td>
+                            <% }else{ %>
+                            <td>
+                              <div class="btn bg-secondary">
+                                <a class="text-light text-decoration-none unblock-link" href="/admin/deleteproduct?id=<%= item._id %>">Block</a>
+                              </div>
+                            </td>
+                            <% } %>
+                            <td>
+                                
+                              <div class="btn bg-secondary">
+                                <a class="text-light text-decoration-none unblock-link" href="/admin/editProducts?id=<%= item._id %>">Edit</a>
+                              </div>
+                            </td>
+                        </tr>
+                        <!-- Add more category rows here -->
+                        <% }) %>
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../layouts/adminFooter.ejs')%>

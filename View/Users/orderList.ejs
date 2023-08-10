@@ -1,0 +1,150 @@
+<%- include('../layouts/userHeader.ejs')%>
+  <!-- ============================================================== -->
+  <!-- Page wrapper  -->
+  <!-- ============================================================== -->
+  <br>
+  <br>
+  <div class="container" >
+
+
+    <!-- <section class="ftco-section">
+                <div class="input-group rounded">
+                    <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+                    <span class="input-group-text border-0" id="search-addon">
+                      <i class="fas fa-search"></i>
+                    </span>
+                  </div>
+            </section> -->
+
+    <div class="container" style="border-color: black;">
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <h2 class="heading-section">Order History</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" >
+      
+      <!-- <div class="col-md-12">
+                <h4 class="text-center mb-4"></h4> -->
+      <div class="table-wrap" >
+        <table class="table" style="border-color: black;">
+          <thead class="thead-primary"  >
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Image</th>
+              <th scope="col">Name</th>
+              <th scope="col">Price</th>
+              <th scope="col">Kg</th>
+              <th scope="col">Total</th>
+              <th scope="col">Status</th>
+              <!-- <th>Status</th>  -->
+            </tr>
+          </thead>
+          <tbody>
+
+            <% for (var i=0; i < orders.length; i++) { %>
+              <tr>
+                <td><%= orders[i].dateOrdered.toDateString() %></td>
+                <td>
+                  <% for (let j=0; j < orders[i].orderItems.length; j++) { %>
+                    
+                      <div class="img" style="background-image:url(/images/<%= orders[i].orderItems[j].productId.productImage[0] %>); width: 50px; height: 50px; object-fit: cover">
+                
+                <% } %>
+                </td>
+                <td>
+                  <% for (let j=0; j < orders[i].orderItems.length; j++) { %>
+                    <p>
+                      <%= orders[i].orderItems[j].productId.productName %>
+                    </p>
+                    <% } %>
+                </td>
+                <td>
+                  <% for (let j=0; j < orders[i].orderItems.length; j++) { %>
+                    <p>
+                      ₹<%= orders[i].orderItems[j].total %>
+                    </p>
+                    <% } %>
+                </td>
+                <td>
+                  <% for (let j=0; j < orders[i].orderItems.length; j++) { %>
+                    <p>
+                      <%= orders[i].orderItems[j].kg %>
+                    </p>
+                    <% } %>
+                </td>
+                
+                <td>
+                  ₹<%= orders[i].grandTotal %>
+                </td>
+                <td>
+                  <%= orders[i].status %>
+                </td>
+                <td>
+                  <% if(orders[i].status!=="cancelled"){ %>
+                  <button type="button" class="btn btn-secondary" >
+                    <a class="text-light text-decoration-none cancel-link" href="/cancel?id=<%= orders[i]._id %>">Cancel</a>
+                  </button>
+                <% } %>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-secondary" ><a class="text-light text-decoration-none cancel-link" href="/orderFullDetails?id=<%=orders[i]._id %>">View details</a></button>
+                </td>
+                
+
+              </tr>
+              
+              <% } %>
+          </tbody>
+        </table>
+      </div>
+      
+    </div>
+    <div class="row mt-5">
+			<div class="col text-center">
+				<div class="block-27">
+					
+						<ul>
+							
+							<% for(let i=1; i<=totalPages;i++) { %>
+								<% if(i===currentPage){ %>
+									<li class="active"><span>
+										<%= i %>
+									</span></li>
+								<% } else { %>
+									<li><a href="/orderList/<%= orders%>/p/<%= i %>">
+										<%= i %>
+									</a></li>
+								<% } %>
+							<% } %>
+						
+						</ul>
+						
+				</div>
+			</div>
+		</div>
+    <br>
+    <section class="ftco-section ftco-no-pt ftco-no-pb py-5 bg-light">
+      <div class="container py-4">
+      <div class="row d-flex justify-content-center py-5">
+        <div class="col-md-6">
+          <h2 style="font-size: 22px;" class="mb-0">Subcribe to our Newsletter</h2>
+          <span>Get e-mail updates about our latest shops and special offers</span>
+        </div>
+        <div class="col-md-6 d-flex align-items-center">
+        <form action="#" class="subscribe-form">
+          <div class="form-group d-flex">
+          <input type="text" class="form-control" placeholder="Enter email address">
+          <input type="submit" value="Subscribe" class="submit px-3">
+          </div>
+        </form>
+        </div>
+      </div>
+      </div>
+    </section>
+    
+    
+    
+    <%- include('../layouts/userFooter.ejs')%>

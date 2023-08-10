@@ -1,0 +1,272 @@
+<%- include('../layouts/userHeader.ejs')%>
+
+  <div class="hero-wrap hero-bread" style="background-image: url('images/bg_1.jpg')">
+    <div class="container">
+      <div class="row no-gutters slider-text align-items-center justify-content-center">
+        <div class="col-md-9 ftco-animate text-center">
+          <p class="breadcrumbs">
+            <span class="mr-2"><a href="index.html">Home</a></span>
+            <span>Checkout</span>
+          </p>
+          <h1 class="mb-0 bread">Checkout</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <section class="ftco-section">
+    <form class="pay-form" action="/checkout" method="post">
+      <div class="container">
+
+        <div class="row justify-content-center">
+          <div class="col-xl-7 ftco-animate">
+
+
+            <h3 class="mb-4 billing-heading">Address Details</h3>
+            <div name="address_id" id="selectAddress">
+              <% for(let i=0;i<user.address.length;i++){ %>
+                <div class="border border-secondary p-2 mt-2 rounded d-flex gap-2 ">
+                  
+                  <div>
+                    <input type="radio" name="address" id="address<%= i %>" value="<%= user.address[i]._id%>" <%=i===0
+                      ? "checked" : "" %>>
+                  </div>
+                  <div>
+                    <div>
+                      <p class="d-block m-0 p-0" name="name"><strong style="color: black;">
+                          <%= user.address[i].name %>
+                        </strong>
+                      </p>
+                    </div>
+
+                    <div>
+                      <p class="d-block m-0 p-0" name="phonenumber">
+                        <%= user.address[i].phonenumber %>
+                      </p>
+                    </div>
+                    <div>
+                      <p class="d-block m-0 p-0" name="email">
+                        <%= user.address[i].email %>
+                      </p>
+                    </div>
+                    <div>
+                      <p class="d-block m-0 p-0" id="addrbox" name="address1">
+                        <%= user.address[i].address1 %>
+                          <%= user.address[i].address2 %>
+                      </p>
+                    </div>
+
+                    <div>
+                      <p class="d-block m-0 p-0" name="state">
+                        <%= user.address[i].state %> , INDIA
+                      </p>
+                    </div>
+
+                    <div>
+                      <p class="d-block m-0 p-0" name="pincode">
+                        <%= user.address[i].pincode %>
+                      </p>
+                    </div>
+                  </div>
+                  
+                </div>
+                <% } %>
+            </div>
+            <p>
+            <div class="justify-content-center d-flex">
+              <a href="addAddress" class="btn btn-primary py-3 px-4 mt-3">Add address</a>
+            </div>
+            </p>
+            <!-- END -->
+          </div>
+
+          <div class="col-xl-5">
+            <div class="row mt-5 pt-3">
+              <div class="col-md-12 d-flex mb-5">
+                <div class="cart-detail cart-total p-3 p-md-4">
+                  <h3 class="billing-heading mb-4">Cart Total</h3>
+                  <p class="d-flex">
+                    <span>Subtotal</span>
+                    <span>₹ <%= subtotal %></span>
+                  </p>
+                  <p class="d-flex">
+                    <span>Delivery</span>
+                    <span> ₹ 0.00</span>
+                  </p>
+                  <p class="d-flex">
+                    <span>Discount</span>
+                    <span> ₹ 0.00</span>
+                  </p>
+                  <hr />
+                  <p class="d-flex total-price">
+
+                    <span>Total</span>
+                    <span>₹ <%= grandTotal %></span>
+                  </p>
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <div class="cart-detail p-3 p-md-4">
+                  <h3 class="billing-heading mb-4">Payment Method</h3>
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      <div class="radio">
+                        <label><input type="radio" name="payment" id="cod" value="COD" class="mr-2" checked />
+                          Cash on delivery</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      <div class="radio">
+                        <label><input type="radio" name="payment" id="wallet" value="wallet" class="mr-2" />
+                          Wallet</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      <div class="radio">
+                        <label><input type="radio" name="payment" id="Razorpay" value="razerpay" class="mr-2" />
+                          RazorPay</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p>
+                    <button id="placeOrderButton" class="btn btn-primary py-3 px-4" type="submit">Place an order</a>
+                  </p>
+                </div>
+              </div>
+    </form>
+    </div>
+    </div>
+    <!-- .col-md-8 -->
+    </div>
+    </div>
+    </form>
+  </section>
+  <!-- .section -->
+
+  <section class="ftco-section ftco-no-pt ftco-no-pb py-5 bg-light">
+    <div class="container py-4">
+      <div class="row d-flex justify-content-center py-5">
+        <div class="col-md-6">
+          <h2 style="font-size: 22px" class="mb-0">Subcribe to our Newsletter</h2>
+          <span>Get e-mail updates about our latest shops and special offers</span>
+        </div>
+        <div class="col-md-6 d-flex align-items-center">
+          <form action="#" class="subscribe-form">
+            <div class="form-group d-flex">
+              <input type="text" class="form-control" placeholder="Enter email address" />
+              <input type="submit" value="Subscribe" class="submit px-3" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <%- include('../layouts/userFooter.ejs')%>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/public/assets/js/jquery-1.11.3.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+
+
+
+    <script>
+      $(document).ready(function () {
+        $('.pay-form').submit(function (e) {
+          e.preventDefault();
+
+          swal({
+            title: "Confirmation of order",
+            text: "Are you sure you want to confirm the order?",
+
+            buttons: ["Cancel", "Place order"]
+          }).then((placeorder) => {
+
+            if (placeorder) {
+              const addressId = document.querySelector('input[name="address"]:checked').value
+              const paymentType = document.querySelector('input[name="payment"]:checked').value
+              
+
+              fetch(`/checkout`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+
+                },
+                body: JSON.stringify({ addressId, paymentType }),
+              })
+                .then(response => response.json())
+                .then(data => {
+                  if (data.success) {
+                    swal({
+                      title: "Order has been placed successfully",
+                      timer: 2000
+                    });
+                    setTimeout(function () {
+                      location.href = `/orderDetails/${data.orderId}`;
+                    }, 3000);
+                  } 
+                })
+                .catch(error => {
+                  
+                  console.log(error);
+                })
+            }
+          });
+        });
+
+        // function verifyPayment() {
+
+        //   $.ajax({
+        //     url: '/checkout',
+        //     method: 'POST',
+
+        //     success: function () {
+        //       swal({
+        //         title: "Order has been placed successfully",
+        //         timer: 2000
+        //       });
+        //       setTimeout(function () {
+        //         location.href = "/orderDetails";
+        //       }, 3000);
+        //     }
+        //   });
+        // }
+      });
+    </script>
+
+    <!-- 
+    <script>
+      $(document).ready(function () {
+        $('.pay-form').submit(function (e) {
+          e.preventDefault();
+
+      function function1() {
+        var Ind = document.getElementById('selectAddress').value
+        document.getElementById('addrbox').value = address[Ind].address
+      }
+    </script> -->
+
+    <!-- <script>
+    $(document).ready(function () {
+      
+      $('input[type="radio"][name="address"]').change(function () {
+        function1();
+        
+      });
+    });
+
+    function function1() {
+      var selectedAddress = $('input[type="radio"][name="address"]:checked').val();
+      document.getElementById('addrbox').innerText = selectedAddress;
+    }
+  </script> -->

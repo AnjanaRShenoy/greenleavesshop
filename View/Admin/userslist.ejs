@@ -1,0 +1,86 @@
+
+<%- include('../layouts/adminHeader.ejs')%>
+
+
+        <!-- ============================================================== -->
+        <!-- Page wrapper  -->
+        <!-- ============================================================== -->
+        
+    </div>
+    
+  <div class="container" style="padding-left: 100px;">
+    
+    
+    <section class="ftco-section">
+        <!-- <div class="input-group rounded">
+            <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+            <span class="input-group-text border-0" id="search-addon">
+              <i class="fas fa-search"></i>
+            </span>
+          </div> -->
+          <br>
+          <br>
+          
+		
+    <div class="container" style="padding-left: 200px;">
+			<div class="row justify-content-center">
+				<div class="col-md-6 text-center mb-5">
+					<h2 class="heading-section">Users List</h2>
+				</div>
+			</div>
+            
+            <div class="row">
+				<!-- <div class="col-md-12">
+					<h4 class="text-center mb-4"></h4> -->
+					<div class="table-wrap">
+						<table class="table" style="border-color: black;">
+					    <thead class="thead-primary">
+					      <tr>
+					        <th>Name</th>
+					        <th>E-mail</th>
+					        <th>Mobile Number</th>
+                            <th>Status</th>
+					      </tr>
+					    </thead>
+                        <tbody>
+                            <% if (users.length > 0) { %>
+                                <% for (let i = 0; i < users.length; i++) { %>
+                                  <% if(users[i].is_verified===1){ %>
+                                    <tr>
+                                        <td><%= users[i].name %></td>
+                                        <td><%= users[i].email %></td>
+                                        <td><%= users[i].phonenumber %></td>
+                                        <% if(users[i].isBlock==true){ %>
+                                            <td>
+                                              <div class="btn bg-secondary">
+                                                <a class="text-light text-decoration-none unblock-link" href="/admin/unblock?id=<%= users[i]._id %>">Unblock</a>
+                                              </div>
+                                            </td>
+                                            <% }else{ %>
+                                            <td>
+                                              <div class="btn bg-secondary">
+                                                <a class="text-light text-decoration-none unblock-link" href="/admin/block?id=<%= users[i]._id %>">Block</a>
+                                              </div>
+                                            </td>
+                                            <% } %>
+                                    </tr>
+                                    <% } %>
+                                <% } %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="3">Users not found</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+  </div>
+    
+
+</body>
+
+<%- include('../layouts/adminFooter.ejs')%> 

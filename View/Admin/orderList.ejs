@@ -1,0 +1,142 @@
+<%- include('../layouts/adminHeader.ejs')%>
+
+
+    <!-- ============================================================== -->
+    <!-- Page wrapper  -->
+    <!-- ============================================================== -->
+
+    </div>
+
+    <div class="container" style="padding-left: 100px;">
+
+
+        <section class="ftco-section">
+            <!-- <div class="input-group rounded">
+            <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+            <span class="input-group-text border-0" id="search-addon">
+              <i class="fas fa-search"></i>
+            </span>
+          </div> -->
+            <br>
+            <br>
+
+
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 text-center mb-5">
+                        <h2 class="heading-section">Order List</h2>
+                    </div>
+                </div>
+
+                <div class="row text-center" style="border-color: black;">
+                    <!-- <div class="col-md-12">
+					<h4 class="text-center mb-4"></h4> -->
+                    <div class="table-wrap ">
+                        <table class="table" style="border-color: black;">
+                            <thead class="thead-primary" style="border-color: black;">
+                                <tr>
+                                    <th>User Id</th>
+                                    <th>Billing name</th>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (orders.length> 0) { %>
+                                    <% for (let i=0; i < orders.length; i++) { %>
+                                        <tr>
+                                            <td>
+                                                <%= orders[i]._id %>
+                                            </td>
+                                            <td>
+                                                <%= orders[i].address.name %><br>
+                                                    <%= orders[i].address.address1 %><br>
+                                                        <%= orders[i].address.address2 %><br>
+                                                            <%= orders[i].address.state %>
+                                                                <%= orders[i].address.pincode %>
+                                            </td>
+                                            <td>
+                                                <% for (let j=0; j < orders[i].orderItems.length; j++) { %>
+                                                    <p>
+                                                        <%= orders[i].orderItems[j].productId.productName %>
+                                                    </p>
+                                                    <% } %>
+                                            </td>
+                                            <td>
+                                                <% for (let j=0; j < orders[i].orderItems.length; j++) { %>
+                                                    <p>
+                                                        <%= orders[i].orderItems[j].kg %>
+                                                    </p>
+                                                    <% } %>
+                                            </td>
+                                            <td>
+                                                <% for (let j=0; j < orders[i].orderItems.length; j++) { %>
+                                                    <p>
+                                                        ₹<%= orders[i].orderItems[j].total %>
+                                                    </p>
+                                                    <% } %>
+                                            </td>
+
+                                            <td>₹ <%= orders[i].grandTotal %>
+                                            </td>
+                                            <td>
+                                                <%= orders[i].dateOrdered.toDateString() %>
+                                            </td>
+
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                      <%= orders[i].status %>
+                                                    </button>
+                                                    <div class="dropdown-menu">
+                                                      <a class="dropdown-item" href="#">Ordered</a>
+                                                      <a class="dropdown-item" href="#">Shipped</a>
+                                                      <a class="dropdown-item" href="#">Delivered</a>
+                                                      <a class="dropdown-item" href="#">Return</a>
+                                                      
+                                                    </div>
+                                                  </div>
+                                            </td>
+                                            
+                                        </tr>
+
+
+                                        <% } %>
+
+                                            <!-- <td>
+                                              <div class="btn bg-secondary">
+                                                <a class="text-light text-decoration-none unblock-link" href="">Unblock</a>
+                                              </div>
+                                            </td>
+                                            
+                                            <td>
+                                              <div class="btn bg-secondary">
+                                                <a class="text-light text-decoration-none unblock-link" href="">Block</a>
+                                              </div>
+                                            </td> -->
+
+                                            </tr>
+
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="3">Orders not found</td>
+                                                </tr>
+                                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+    </div>
+    </section>
+    </div>
+
+
+    </body>
+
+    <%- include('../layouts/adminFooter.ejs')%>

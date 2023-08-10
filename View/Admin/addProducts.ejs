@@ -1,0 +1,218 @@
+<%- include('../layouts/adminHeader.ejs')%>
+
+  <div class="col-md-6" style="padding-left: 290px;">
+    <br><br>
+    <div class="add-product">
+      <h2>Add Product</h2>
+
+      <br>
+      <br>
+      <form onsubmit="return validateForm()" action="/admin/addProducts" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+          <span class="formerror text-danger" id="name-info"></span>
+          <label for="product-name">Product Name</label>
+          <input type="text" style="border-color:black" name="productname" class="form-control" id="product-name"
+            onkeyup="validateName()">
+        </div>
+        <div class="form-group">
+          <span class="formerror text-danger" id="description-info"></span>
+          <label for="product-description">Description</label>
+          <textarea class="form-control" style="border-color:black" name="description" id="product-description"
+            onkeyup="validateDescription()" rows="3"></textarea>
+        </div>
+        <div class="m-4">
+          <span class="formerror text-danger" id="image-info"></span>
+          <label style="color: #fff; font-weight: 300;">Upload Images</label><br>
+          <input type="file" style="border-color:black" class="form-control-file custom-file-input" id="preview-image"
+            name="productImage" onchange="previewImage(event)" style="opacity:100" multiple onkeyup="validateImage()">
+        </div>
+        <div class="form-group">
+          <span class="formerror text-danger" id="category-info"></span>
+          <label for="product-category">Category</label>
+          <select name="category" class="form-control" style="border-color:black" id="product-category"
+            onkeyup="validateCategory()">
+            <option> Select category</option>
+            <% for (let i=0; i < category.length; i++) { if (!category[i].categoryBlock) { %>
+              <option>
+                <%= category[i].categoryName %>
+              </option>
+              <% } } %>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <span class="formerror text-danger" id="price-info"></span>
+          <label for="product-price">Price</label>
+          <input type="number" name="price" class="form-control" style="border-color:black " id="product-price"
+            onkeyup="validatePrice()">
+        </div>
+        <div class="form-group">
+          <span class="formerror text-danger" id="kg-info"></span>
+          <label for="product-kg">Kg</label>
+          <input type="number" name="kg" class="form-control" style="border-color:black" id="product-kg"
+            onkeyup="validateKg()">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Product</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function previewImage(event) {
+      const previewImages = document.getElementById('preview-image')
+      for (let i = 0; i < event.target.files.length; i++) {
+        const file = event.target.files[i]
+        const reader = new FileReader()
+        reader.onload = function (e) {
+          previewImages[i].src = e.target.result
+        }
+        reader.readAsDataURL(file)
+      }
+    }
+  </script>
+
+
+  <%- include('../layouts/adminFooter.ejs')%>
+
+    <script>
+
+      var nameError = document.getElementById("name-info");
+      var descriptionError = document.getElementById("description-info");
+      var imageError = document.getElementById("image-info");
+      var categoryError = document.getElementById("category-info");
+      var priceError = document.getElementById("price-info");
+      var kgError = document.getElementById("kg-info");
+      var submitError = document.getElementById("submit-error")
+
+      function validateName() {
+        var name = document.getElementById("product-name").value.trim();
+
+        if (name.length === 0) {
+          nameError.innerHTML = "Product name is required";
+          return false;
+        }
+
+        if (!name.replace(/\s/g, "").length) {
+          nameError.innerHTML = "Product Name cannot be just spaces";
+          return false;
+        } else {
+          nameError.innerHTML = "";
+          return true;
+        }
+      }
+      function validateDescription() {
+        var description = document.getElementById("product-description").value.trim();
+
+        if (description.length === 0) {
+          descriptionError.innerHTML = "Product description is required";
+          return false;
+        }
+
+        if (!description.replace(/\s/g, "").length) {
+          descriptionError.innerHTML = "Description cannot be just spaces";
+          return false;
+        } else if (description.length < 50) {
+          descriptionError.innerHTML = "Product description should be at least 50 characters.";
+          return false;
+        } else {
+          descriptionError.innerHTML = "";
+          return true;
+        }
+      }
+      function validateImage() {
+        var imageInput = document.getElementById("preview-image");
+        if (imageInput.files.length === 0) {
+          imageError.innerHTML = "Product image is required";
+          return false;
+        }
+        else {
+          imageError.innerHTML = "";
+          return true;
+        }
+      }
+
+      function validateCategory() {
+        var category = document.getElementById("product-category").value.trim();
+
+        if (category === "") {
+          categoryError.innerHTML = "Product category is required";
+          return false;
+        }
+        else {
+          categoryError.innerHTML = "";
+          return true;
+        }
+
+      }
+
+      function validatePrice() {
+        var price = document.getElementById("product-price").value.trim();
+
+        if (price.length === 0) {
+          priceError.innerHTML = "Product price is required";
+          return false;
+        }
+        if (isNaN(price) || parseFloat(price) <= 0) {
+          priceError.innerHTML = "Please enter a valid price"
+          return false;
+        }
+
+        else {
+          priceError.innerHTML = "";
+          return true;
+        }
+      }
+
+      function validateKg() {
+        var kg = document.getElementById("product-kg").value.trim();
+
+        if (kg.length === 0) {
+          kgError.innerHTML = "Product quantity is required";
+          return false;
+        }
+        if (kg < 0) {
+          kgError.innerHTML = "Please enter a valid quantity"
+        }
+        else {
+          kgError.innerHTML = "";
+          return true;
+        }
+      }
+
+      function validateForm() {
+        if (
+          !validateName() &&
+          !validateDescription() &&
+          !validateImage() &&
+          !validateCategory() &&
+          !validatePrice() &&
+          !validateKg()
+        ) {
+          submitError.style.direction = "block";
+          submitError.innerHTML = "Please Fix the errors to Register";
+          event.preventDefault();
+          setTimeout(function () {
+            submitError.style.display = "none ";
+          }, 3000);
+          return false;
+        } else if (
+          !validateName() ||
+          !validateDescription() ||
+          !validateImage() ||
+          !validateCategory() ||
+          !validatePrice() ||
+          !validateKg()
+        ) {
+          submitError.style.display = "block";
+          submitError.innerHTML = "Please Fix the errors to Register";
+          event.preventDefault();
+          setTimeout(function () {
+            submitError.style.display = "none";
+          }, 3000);
+          return false;
+        } else {
+          return true; // Return true if all validations pass
+        }
+      }
+    </script>
