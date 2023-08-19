@@ -62,6 +62,7 @@ const createOrder = async (req, res, next) => {
 const verifyPayment = async (req, res, next) => {
   try {
     const userId = req.session.user_id;
+    const orderId = new mongoose.Types.ObjectId();
 
     // -------------------------------------------
     const user = await User.findById(req.session.user_id);
@@ -113,7 +114,9 @@ const verifyPayment = async (req, res, next) => {
         grandTotal += cart.product[i].productId.price * cart.product[i].kg;
       }
       console.log(req.body.paymentType);
+      
       const newOrder = new Order({
+        _id: orderId,
         user_id: req.session.user_id,
         address,
         orderItems: cart.product,
@@ -142,36 +145,36 @@ const verifyPayment = async (req, res, next) => {
       order_id: razorpayOrderId,
     });
     const order = await Order.findOne({
-      user_id: userId,
-      order_id: razorpayOrderId,
+      _id: orderId,
     });
     console.log(order, "kiiii");
-    if (order.status === "pending")
+    // if (order.status === "pending")
       return res.status(200).json({ success: true });
 
-    const hmac = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET);
+    // const hmac = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET);
 
-    hmac.update(razorpayOrderId + "|" + razorpayPaymentId);
-    const generatedSignature = hmac.digest("hex");
+    // hmac.update(razorpayOrderId + "|" + razorpayPaymentId);
+    // const generatedSignature = hmac.digest("hex");
 
-    if (generatedSignature === secret) {
-      order.status = "ordered";
-      await Cart.findOneAndUpdate({ _id: userId }, { product: [] });
-      await order.save();
-      res.status(200).json({ success: true });
-    } else {
-      order.status = "payment_failed";
-      await order.save();
-      res.status(400).json({ success: false });
-      order.orderItems.forEach(async (item) => {
-        await Product.updateOne(
-          { _id: item.productId },
-          { $inc: { kg: item.kg } }
-        );
-      });
-    }
+    // if (generatedSignature === secret) {
+    //   order.status = "ordered";
+    //   await Cart.findOneAndUpdate({ _id: userId }, { product: [] });
+    //   await order.save();
+    //   res.status(200).json({ success: true });
+    // } else {
+    //   order.status = "payment_failed";
+    //   await order.save();
+    //   res.status(400).json({ success: false });
+    //   order.orderItems.forEach(async (item) => {
+    //     await Product.updateOne(
+    //       { _id: item.productId },
+    //       { $inc: { kg: item.kg } }
+    //     );
+    //   });
+    // }
   } catch (err) {
-    next(err);
+    // next(err);
+    res.send(err.message);
   }
 };
 
