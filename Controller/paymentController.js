@@ -133,7 +133,7 @@ const verifyPayment = async (req, res, next) => {
 
       await newOrder.save();
       // const orderId = newOrder._id;
-      // const deleteCart = await Cart.deleteOne({ user_id: req.session.user_id });
+      const deleteCart = await Cart.deleteOne({ user_id: req.session.user_id });
     } else {
       res.status(400).send({ error: "No address" });
     }

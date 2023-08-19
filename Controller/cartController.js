@@ -235,6 +235,7 @@ const checkOrder = async (req, res, next) => {
           { user_id: req.session.user_id },
           { orderItems: [] }
         );
+        const deleteCart = await Cart.deleteOne({ user_id: req.session.user_id });
         res.status(200).json({ success: true, url: `/orders/${order._id}` });
         return;
       } else if (paymentType === "Razorpay") {
