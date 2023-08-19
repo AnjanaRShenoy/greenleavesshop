@@ -1,0 +1,243 @@
+<%- include('../layouts/adminHeader.ejs')%>
+
+  <div class="col-md-6" style="padding-left: 290px;">
+    
+    <br><br>
+    <div class="add-product">
+      <h2>Add Coupons</h2>
+
+      <br>
+      <br>
+      <form id="addForm" onsubmit="return validateForm()" action="/admin/addCoupons" method="post" >
+        
+        <div class="form-group">
+          
+          <label for="coupon-code">Coupon Code</label>
+          <input type="text" style="border-color:black" name="couponCode" class="form-control" id="coupon-code"
+            onkeyup="validateCode()">
+            <span class="formerror text-danger" id="code-info"></span>
+        </div>
+
+        <div class="form-group">
+            
+            <label for="coupon-description">Discount amount</label>
+            <textarea class="form-control" style="border-color:black" name="couponAmount" id="coupon-amount"
+              onkeyup="validateAmount()" rows="3"></textarea>
+              <span class="formerror text-danger" id="amount-info"></span>
+          </div>
+
+        <div class="form-group">
+          
+          <label for="coupon-description">Description</label>
+          <textarea class="form-control" style="border-color:black" name="couponDescription" id="coupon-description"
+            onkeyup="validateDescription()" rows="3"></textarea>
+            <span class="formerror text-danger" id="description-info"></span>
+        </div>
+
+        <div class="form-group">
+          
+          <label for="coupon-date">Starting date</label>
+          <input type="date" name="startDate" class="form-control" style="border-color:black " id="coupon-startDate"
+            onkeyup="validateStartDate()">
+            <span class="formerror text-danger" id="startDate-info"></span>
+        </div>
+
+        <div class="form-group">
+          
+          <label for="coupon-enddate">Expiry Date</label>
+          <input type="date" name="expiryDate" class="form-control" style="border-color:black" id="coupon-endDate"
+            onkeyup="validateEndDate()">
+            <span class="formerror text-danger" id="endDate-info"></span>
+        </div>
+
+        <div class="form-group">
+            
+            <label for="coupon-minamt">Minimum amount</label>
+            <input type="number" name="minimumAmount" class="form-control" style="border-color:black" id="coupon-minamt"
+              onkeyup="validateMinAmt()">
+              <span class="formerror text-danger" id="min-info"></span>
+          </div>
+
+        <button type="submit" class="btn btn-primary">Add Coupon</button>
+
+        <span>
+          <p style="color: green"></p>
+          <% if(typeof successMessage!=='undefined' ){ %>
+            <p style="color:green"><%- successMessage %></p>
+            <% } if(typeof errorMessage!=='undefined' ){ %>
+              <p style="color:red"><%- errorMessage %></p>
+              <% } %>
+        </span>
+        
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function previewImage(event) {
+      const previewImages = document.getElementById('preview-image')
+      for (let i = 0; i < event.target.files.length; i++) {
+        const file = event.target.files[i]
+        const reader = new FileReader()
+        reader.onload = function (e) {
+          previewImages[i].src = e.target.result
+        }
+        reader.readAsDataURL(file)
+      }
+    }
+  </script>
+
+
+  <%- include('../layouts/adminFooter.ejs')%>
+
+    <script>
+
+      var codeError = document.getElementById("code-info");
+      var amtError = document.getElementById("amount-info");
+      var descriptionError = document.getElementById("description-info");
+      var startDateError = document.getElementById("startDate-info");
+      var endDateError = document.getElementById("endDate-info");
+      var minAmtError = document.getElementById("min-info");
+      var submitError = document.getElementById("submit-error")
+      var addform=document.getElementById('addForm')
+    
+      function validateForm() {
+        event.preventDefault();
+        if (
+          !validateCode() &&
+          !validateDescription() &&
+          !validateAmount() &&
+          !validateStartDate() &&
+          !validateEndDate() &&
+          !validateMinAmt()
+        ) {
+          submitError.style.display = "block";
+          submitError.innerHTML = "Please Fix the errors to Register";
+          event.preventDefault();
+          setTimeout(function () {
+            submitError.style.display = "none ";
+          }, 3000);
+          return false;
+        } else if (
+          !validateCode() ||
+          !validateDescription() ||
+          !validateStartDate() ||
+          !validateEndDate() ||
+          !validateMinAmt() ||
+          !validateAmount()
+        ) {
+          submitError.style.display = "block";
+          submitError.innerHTML = "Please fix the errors to Register";
+          event.preventDefault();
+          setTimeout(function () {
+            submitError.style.display = "none"
+          }, 3000);
+          return false;
+        } else {
+          
+          // Return true if all validations pass
+          addform.submit()
+        }
+      }
+      function validateCode() {
+        var name = document.getElementById("coupon-code").value.trim();
+
+        if (name.length === 0) {
+          codeError.innerHTML = "Coupon code is required";
+          return false;
+        }
+
+        if (!name.replace(/\s/g, "").length) {
+          codeError.innerHTML = "Product Name cannot be just spaces";
+          return false;
+        } else {
+          codeError.innerHTML = "";
+          return true;
+        }
+      }
+      function validateDescription() {
+        var description = document.getElementById("coupon-description").value.trim();
+
+        if (description.length === 0) {
+          descriptionError.innerHTML = "Product description is required";
+          return false;
+        }
+
+        if (!description.replace(/\s/g, "").length) {
+          descriptionError.innerHTML = "Description cannot be just spaces";
+          return false;
+
+        }  else {
+          descriptionError.innerHTML = "";
+          return true;
+        }
+      }
+
+      function validateStartDate() {
+        var date = document.getElementById("coupon-startDate").value.trim();
+
+        if (date.length === "") {
+          startDateError.innerHTML = " is required";
+          return false;
+        }
+        else {
+          startDateError.innerHTML = "";
+          return true;
+        }
+
+      }
+
+      function validateEndDate() {
+        var enddate = document.getElementById("coupon-endDate").value.trim();
+
+        if (enddate.length === "") {
+          endDateError.innerHTML = "date is required";
+          return false;
+        }
+        else {
+          endDateError.innerHTML = "";
+          return true;
+        }
+
+      }
+
+      function validateMinAmt() {
+        var minAmt = document.getElementById("coupon-minamt").value.trim();
+
+        if (minAmt.length === 0) {
+          minAmtError.innerHTML = "Minimum amount is required";
+          return false;
+        }
+
+        if (minAmt < 0) {
+          minAmtError.innerHTML = "Please enter a valid quantity"
+          return false
+        }
+
+        else {
+          minAmtError.innerHTML = "";
+          return true;
+        }
+      }
+
+      function validateAmount() {
+        var amount = document.getElementById("coupon-amount").value.trim();
+
+        if (amount.length === 0) {
+          amtError.innerHTML = "Minimum amount is required";
+          return false;
+        }
+
+        if (amount < 0) {
+          amtError.innerHTML = "Please enter a valid quantity"
+          return false
+        }
+
+        else {
+          amtError.innerHTML = "";
+          return true;
+        }
+      }
+
+
+    </script>

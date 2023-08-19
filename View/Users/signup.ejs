@@ -38,7 +38,7 @@
         <div class="container-login100">
             <div class="wrap-login100">
                 <div style="border: 1px solid; padding: 10px;">
-                    <form onsubmit="return validateForm();" action="/signup" method="post" id="Form" name="myForm">
+                    <form id="addForm" onsubmit="return validateForm()" action="/signup" method="post" id="Form" name="myForm">
                         <span class="login100-form-title p-b-43">
                             Signup
                         </span>
@@ -144,6 +144,45 @@
                     var passwordError = document.getElementById("password-info");
                     var repasswordError = document.getElementById("repassword-info");
                     var submitError = document.getElementById("submit-info");
+                    var addform = document.getElementById('addForm')
+
+                    function validateForm() {
+                        event.preventDefault()
+                        if (
+                            !validateName() &&
+                            !validateEmail() &&
+                            !validateMobileNo() &&
+                            !validatePassword() &&
+                            !validateRePassword()
+                        ) {
+                            submitError.style.direction = "block";
+                            submitError.innerHTML = "Please Fix the errors to Register";
+                            event.preventDefault();
+                            setTimeout(function () {
+                                submitError.style.display = "none ";
+                            }, 3000);
+                            return false;
+                        } else if (
+                            !validateName() ||
+                            !validateEmail() ||
+                            !validateMobileNo() ||
+                            !validatePassword() ||
+                            !validateRePassword()
+                        ) {
+                            submitError.style.direction = "block";
+                            submitError.innerHTML = "Please Enter All Required Fields to Register";
+                            event.preventDefault();
+                            setTimeout(function () {
+                                submitError.style.display = "none ";
+                            }, 3000);
+                            return false;
+                        }
+                        else{
+                            addform.submit()
+                        }
+                    }
+
+
 
                     function validateName() {
                         var name = document.getElementById("username").value;
@@ -178,9 +217,10 @@
                             emailError.innerHTML = "Invalid e-mail address";
                             return false;
                         }
-
+                        else{
                         emailError.innerHTML = "";
                         return true;
+                        }
                     }
 
                     function validateMobileNo() {
@@ -204,8 +244,8 @@
                             return false;
                         }
 
-                        mobileNoError.innerHTML = "";
-                        return true;
+                        else{mobileNoError.innerHTML = "";
+                        return true;}
                     }
 
                     function validatePassword() {
@@ -215,60 +255,33 @@
                             passwordError.innerHTML = "Password is required";
                             return false;
                         }
-                        if(password.length!==8){
+                        if(password.length<8){
                             passwordError.innerHTML="Atleast 8 characters are required"
                             return false
                         } 
 
-                        passwordError.innerHTML = "";
-                        return true;
+                        else{passwordError.innerHTML = "";
+                        return true;}
                     }
+                    
+
 
                     function validateRePassword() {
+                        
                         var repassword = document.getElementById("repassword").value
-                        var password = document.getElementById("password").value;
+                        
 
                         if (repassword.length == 0) {
                             repasswordError.innerHTML = "Password is required";
                             return false;
                         }
                         
-                        repassswordError.innerHTML = ""
-                        return true;
+                        else{
+                        repasswordError.innerHTML = ""
+                        return true;}
                     }
 
-                    function validateForm() {
-                        if (
-                            !validateName() &&
-                            !validateEmail() &&
-                            !validateMobileNo() &&
-                            !validatePassword() &&
-                            !validateRePassword()
-                        ) {
-                            submitError.style.direction = "block";
-                            submitError.innerHTML = "Please Fix the errors to Register";
-                            event.preventDefault();
-                            setTimeout(function () {
-                                submitError.style.display = "none ";
-                            }, 3000);
-                            return false;
-                        } else if (
-                            !validateName() ||
-                            !validateEmail() ||
-                            !validateMobileNo() ||
-                            !validatePassword() ||
-                            !validateRePassword()
-                        ) {
-                            submitError.style.direction = "block";
-                            submitError.innerHTML = "Please Enter All Required Fields to Register";
-                            event.preventDefault();
-                            setTimeout(function () {
-                                submitError.style.display = "none ";
-                            }, 3000);
-                            return false;
-                        }
-                    }
-
+                   
 
                 </script>
 

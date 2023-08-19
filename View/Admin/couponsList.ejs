@@ -1,0 +1,94 @@
+<%- include('../layouts/adminHeader.ejs')%>
+        <!-- ============================================================== -->
+        <!-- Page wrapper  -->
+        <!-- ============================================================== -->
+    <br>
+    <br>
+        <div class="container" style="padding-left: 150px;">
+          
+            
+            
+            <!-- <section class="ftco-section">
+                <div class="input-group rounded">
+                    <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+                    <span class="input-group-text border-0" id="search-addon">
+                      <i class="fas fa-search"></i>
+                    </span>
+                  </div>
+            </section> -->
+            <a class="btn btn-primary" href="/admin/addCoupons" role="button">Add Coupons</a>
+            <br>
+            <br>
+            <br>
+                <div class="container" style="border-color: black;">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 text-center mb-5">
+                            <h2 class="heading-section">Coupon list</h2>
+                        </div>
+                    </div>
+                </div>
+                
+        <div class="row text-center" >
+            <!-- <div class="col-md-12">
+                <h4 class="text-center mb-4"></h4> -->
+                <div class="table-wrap">
+                    <table class="table" style="border-color: black;">
+                    <thead class="thead-primary">
+                      <tr>
+                        <th scope="col"></th>
+                      <th scope="col">Code</th>
+                      <th scope="col">Coupon Amount</th>
+                      <th scope="col">Description</th>
+                      <th scope="col">Start Date</th>
+                      <th scope="col">End Date</th>
+                      
+                      <th scope="col">Minimum Amount</th>
+                      <th scope="col">Status</th>
+                        <!-- <th>Status</th>  -->
+                      </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <% coupon.forEach(function(item) {%>
+                    <tr>
+                      <td></td>
+                      <td><%= item.couponCode%></td>
+                      <td><%= item.couponAmount%></td>
+                      <td><%= item.description %></td>
+                      <td><%= item.startDate.toDateString() %></td>
+                      <td><%= item.expiryDate.toDateString() %></td>
+                      <td><%= item.minimumAmount %></td>
+                      <td><%= item.status %></td>
+                     
+                      
+                      
+                      <% if(item.status=="Active"){ %>
+                        <td>
+                            
+                          <div class="btn bg-secondary">
+                            <a class="text-light text-decoration-none unblock-link" href="/admin/blockCoupon?id=<%= item._id %>">Block</a>
+                          </div>
+                        </td>
+                        <% }else{ %>
+                        <td>
+                          <div class="btn bg-secondary">
+                            <a class="text-light text-decoration-none unblock-link" href="/admin/unblockCoupon?id=<%= item._id %>">Unblock</a>
+                          </div>
+                        </td>
+                        <% } %>
+                        <td>
+                            
+                          <div class="btn bg-secondary">
+                            <a class="text-light text-decoration-none unblock-link" href="/admin/editCoupon?id=<%= item._id %>">Edit</a>
+                          </div>
+                        </td>
+                    </tr>
+                    <!-- Add more category rows here -->
+                    <% }) %>
+                  </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../layouts/adminFooter.ejs')%>

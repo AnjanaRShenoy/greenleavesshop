@@ -4,42 +4,42 @@
   <!-- ============================================================== -->
   <br>
   <br>
-  <div class="container" style="padding-left: 280px;">
-    <!-- <link rel="stylesheet" href="/css/style (3).css"> -->
+  <div class="container" style="padding-left: 100px;">
+    <link rel="stylesheet" href="/css/style (3).css">
 
     <div>
-      <h2 class="category-heading">Add Category</h2>
+      <h2 class="category-heading">Edit Category</h2>
 
 
     </div>
 
     <div class="main-content">
-      <form id="addForm"onsubmit="return validateForm();" action="/admin/categoryAdd" method="post" enctype="multipart/form-data">
+      <form id='addForm' onsubmit="return validateForm();" action="/admin/editCategory" method="post" enctype="multipart/form-data">
         <div class="category-form">
-          <span class="label-input100" strong
+          <br><span class="label-input100" strong
             style="color:black">CATEGORY</span><br>
-          
-            <input type="text" style="border-color:black" name="categoryName" class="form-control" id="categoryName"
+            <input type="text" style="border-color:black" name="categoryName" class="form-control" id="categoryName" value="<%=category.categoryName %>"
             onkeyup="validateCategory()">
+            
+            <input type="text" name="id" class="form-control" id="proId" onkeyup="validateName()"
+            value="<%=category._id %>" hidden>
             <span class="formerror text-danger" id="category-info"></span><br>
 
-
-          <span class="label-input100" strong
+            <span class="label-input100" strong
             style="color:black">CATEGORY OFFER</span><br>
           
-            <input type="text" style="border-color:black" name="categoryOffer" class="form-control" id="categoryOffer"
+            <input type="text" style="border-color:black" name="categoryOffer" class="form-control" id="categoryOffer" value="<%=category.categoryOffer %>"
             onkeyup="validateOffer()">
             <span class="formerror text-danger" id="offer-info"></span><br>
 
-          
+          <div class="m-4">
             
-                <label style="color: #fff; font-weight: 300;">Upload Images</label><br>
-                <span class="label-input100" strong style="color:rgb(51, 47, 47)">CATEGORY IMAGE</span><br>
-
-                <input type="file" style="border-color:black" class="form-control-file custom-file-input" id="preview-image"
-                name="categoryImage" onchange="previewImage(event)" style="opacity:100" multiple onkeyup="validateImage()"><br>
-                <span class="formerror text-danger" id="image-info"></span><br><br><br>
-             
+            <span class="label-input100" strong style="color:black">CATEGORY IMAGE</span><br>
+            <label style="color: #fff; font-weight: 300;">Upload Images</label><br>
+              <input type="file" style="border-color:black" class="form-control-file custom-file-input" id="preview-image"
+              name="categoryImage" onchange="previewImage(event)" style="opacity:100" multiple onkeyup="validateImage()">
+              <span class="formerror text-danger" id="image-info"></span>
+            </div>
           <button type="submit" class="btn btn-primary category-btn">Add</button>
         </div>
 
@@ -70,13 +70,13 @@
   <!-- End Page wrapper  -->
 
   <script>
-    function previewImage(event){
-      const previewImages=document.getElementById('preview-image')
-      for(let i=0;i<event.target.files.length;i++){
-        const file=event.target.files[i]
-        const reader=new FileReader()
-        reader.onload=function(e){
-          previewImages[i].src=e.target.result
+    function previewImage(event) {
+      const previewImages = document.querySelectorAll('preview-image')
+      for (let i = 0; i < event.target.files.length; i++) {
+        const file = event.target.files[i]
+        const reader = new FileReader()
+        reader.onload = function (e) {
+          previewImages[i].src = e.target.result
         }
         reader.readAsDataURL(file)
       }
@@ -88,16 +88,14 @@
     <script>
       var categoryError = document.getElementById("category-info");
       var offerError = document.getElementById("offer-info");
-      var imageError = document.getElementById("image-info");
       var submitError = document.getElementById("submit-info");
-      var addform=document.getElementById('addForm')
+      var addform = document.getElementById('addForm')
 
       function validateForm() {
         event.preventDefault();
         if (
           !validateCategory() &&
-          !validateOffer() &&
-          !validateImage()
+          !validateOffer()
         ) {
           submitError.style.direction = "block";
           submitError.innerHTML = "Please Fix the errors to Register";
@@ -108,8 +106,7 @@
           return false;
         } else if (
           !validateCategory() ||
-          !validateOffer() ||
-          !validateImage()
+          !validateOffer()
 
         ) {
           submitError.style.direction = "block";
@@ -120,7 +117,7 @@
           }, 3000);
           return false;
         }
-        else{
+        else {
           addform.submit()
         }
       }
@@ -163,18 +160,7 @@
         }
       }
 
-      function validateImage() {
-        var imageInput = document.getElementById("preview-image");
-        if (imageInput.files.length === 0) {
-          imageError.innerHTML = "Category image is required";
-          return false;
-        }
-        else {
-          imageError.innerHTML = "";
-          return true;
-        }
-      }
-      
+
 
 
     </script>

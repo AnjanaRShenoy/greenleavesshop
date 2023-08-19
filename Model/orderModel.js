@@ -52,7 +52,7 @@ const orderSchema= new mongoose.Schema({
     },
     status:{
         type:String,
-        default:"ordered"
+        default:"pending"
         
     },
     paymentMethod:{

@@ -1,250 +1,366 @@
 <%- include('../layouts/userHeader.ejs')%>
 
-  <div class="hero-wrap hero-bread" style="background-image: url('images/bg_1.jpg')">
-    <div class="container">
-      <div class="row no-gutters slider-text align-items-center justify-content-center">
-        <div class="col-md-9 ftco-animate text-center">
-          <p class="breadcrumbs">
-            <span class="mr-2"><a href="index.html">Home</a></span>
-            <span>Checkout</span>
-          </p>
-          <h1 class="mb-0 bread">Checkout</h1>
-        </div>
+<div class="hero-wrap hero-bread" style="background-image: url('images/bg_1.jpg')">
+  <div class="container">
+    <div class="row no-gutters slider-text align-items-center justify-content-center">
+      <div class="col-md-9 ftco-animate text-center">
+        <p class="breadcrumbs">
+          <span class="mr-2"><a href="index.html">Home</a></span>
+          <span>Checkout</span>
+        </p>
+        <h1 class="mb-0 bread">Checkout</h1>
       </div>
     </div>
   </div>
+</div>
 
 
-  <section class="ftco-section">
-    <form class="pay-form" action="/checkout" method="post">
-      <div class="container">
+<section class="ftco-section">
+  <form class="pay-form">
+    <div class="container">
 
-        <div class="row justify-content-center">
-          <div class="col-xl-7 ftco-animate">
+      <div class="row justify-content-center">
+        <div class="col-xl-7 ftco-animate">
 
 
-            <h3 class="mb-4 billing-heading">Address Details</h3>
-            <div name="address_id" id="selectAddress">
-              <% for(let i=0;i<user.address.length;i++){ %>
-                <div class="border border-secondary p-2 mt-2 rounded d-flex gap-2 ">
-                  
-                  <div>
-                    <input type="radio" name="address" id="address<%= i %>" value="<%= user.address[i]._id%>" <%=i===0
+          <h3 class="mb-4 billing-heading">Address Details</h3>
+          <div name="address_id" id="selectAddress">
+            <% for(let i=0;i<user.address.length;i++){ %>
+            <div class="border border-secondary p-2 mt-2 rounded d-flex gap-2 ">
+
+              <div>
+                <input type="radio" name="address" id="address<%= i %>" value="<%= user.address[i]._id%>" <%=i===0
                       ? "checked" : "" %>>
-                  </div>
-                  <div>
-                    <div>
-                      <p class="d-block m-0 p-0" name="name"><strong style="color: black;">
-                          <%= user.address[i].name %>
-                        </strong>
-                      </p>
-                    </div>
-
-                    <div>
-                      <p class="d-block m-0 p-0" name="phonenumber">
-                        <%= user.address[i].phonenumber %>
-                      </p>
-                    </div>
-                    <div>
-                      <p class="d-block m-0 p-0" name="email">
-                        <%= user.address[i].email %>
-                      </p>
-                    </div>
-                    <div>
-                      <p class="d-block m-0 p-0" id="addrbox" name="address1">
-                        <%= user.address[i].address1 %>
-                          <%= user.address[i].address2 %>
-                      </p>
-                    </div>
-
-                    <div>
-                      <p class="d-block m-0 p-0" name="state">
-                        <%= user.address[i].state %> , INDIA
-                      </p>
-                    </div>
-
-                    <div>
-                      <p class="d-block m-0 p-0" name="pincode">
-                        <%= user.address[i].pincode %>
-                      </p>
-                    </div>
-                  </div>
-                  
+              </div>
+              <div>
+                <div>
+                  <p class="d-block m-0 p-0" name="name"><strong style="color: black;">
+                      <%= user.address[i].name %>
+                    </strong>
+                  </p>
                 </div>
-                <% } %>
+
+                <div>
+                  <p class="d-block m-0 p-0" name="phonenumber">
+                    <%= user.address[i].phonenumber %>
+                  </p>
+                </div>
+                <div>
+                  <p class="d-block m-0 p-0" name="email">
+                    <%= user.address[i].email %>
+                  </p>
+                </div>
+                <div>
+                  <p class="d-block m-0 p-0" id="addrbox" name="address1">
+                    <%= user.address[i].address1 %>
+                    <%= user.address[i].address2 %>
+                  </p>
+                </div>
+
+                <div>
+                  <p class="d-block m-0 p-0" name="state">
+                    <%= user.address[i].state %> , INDIA
+                  </p>
+                </div>
+
+                <div>
+                  <p class="d-block m-0 p-0" name="pincode">
+                    <%= user.address[i].pincode %>
+                  </p>
+                </div>
+              </div>
+
             </div>
-            <p>
-            <div class="justify-content-center d-flex">
-              <a href="addAddress" class="btn btn-primary py-3 px-4 mt-3">Add address</a>
+            <% } %>
+          </div>
+          <p>
+          <div class="justify-content-center d-flex">
+            <a href="addAddress" class="btn btn-primary py-3 px-4 mt-3">Add address</a>
+          </div>
+          </p>
+
+
+          <div class="col-lg-4 mt-5 cart-wrap ftco-animate">
+            <div class="cart-total mb-3">
+              <h3>Coupon Code</h3>
+              <p>Enter your coupon code if you have one</p>
+
+              <div class="form-group">
+                <label>Coupon code</label>
+                <input type="text" class="form-control text-left px-3" placeholder="" readonly>
+              </div>
+
             </div>
-            </p>
-            <!-- END -->
+            <p><a href="/couponLoad" class="btn btn-primary py-3 px-4">Apply Coupon</a></p>
+
           </div>
 
-          <div class="col-xl-5">
-            <div class="row mt-5 pt-3">
-              <div class="col-md-12 d-flex mb-5">
-                <div class="cart-detail cart-total p-3 p-md-4">
-                  <h3 class="billing-heading mb-4">Cart Total</h3>
-                  <p class="d-flex">
-                    <span>Subtotal</span>
-                    <span>₹ <%= subtotal %></span>
-                  </p>
-                  <p class="d-flex">
-                    <span>Delivery</span>
-                    <span> ₹ 0.00</span>
-                  </p>
-                  <p class="d-flex">
-                    <span>Discount</span>
-                    <span> ₹ 0.00</span>
-                  </p>
-                  <hr />
-                  <p class="d-flex total-price">
-
-                    <span>Total</span>
-                    <span>₹ <%= grandTotal %></span>
-                  </p>
-                </div>
-              </div>
-
-              <div class="col-md-12">
-                <div class="cart-detail p-3 p-md-4">
-                  <h3 class="billing-heading mb-4">Payment Method</h3>
-                  <div class="form-group">
-                    <div class="col-md-12">
-                      <div class="radio">
-                        <label><input type="radio" name="payment" id="cod" value="COD" class="mr-2" checked />
-                          Cash on delivery</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-md-12">
-                      <div class="radio">
-                        <label><input type="radio" name="payment" id="wallet" value="wallet" class="mr-2" />
-                          Wallet</label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-md-12">
-                      <div class="radio">
-                        <label><input type="radio" name="payment" id="Razorpay" value="razerpay" class="mr-2" />
-                          RazorPay</label>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p>
-                    <button id="placeOrderButton" class="btn btn-primary py-3 px-4" type="submit">Place an order</a>
-                  </p>
-                </div>
-              </div>
-    </form>
-    </div>
-    </div>
-    <!-- .col-md-8 -->
-    </div>
-    </div>
-    </form>
-  </section>
-  <!-- .section -->
-
-  <section class="ftco-section ftco-no-pt ftco-no-pb py-5 bg-light">
-    <div class="container py-4">
-      <div class="row d-flex justify-content-center py-5">
-        <div class="col-md-6">
-          <h2 style="font-size: 22px" class="mb-0">Subcribe to our Newsletter</h2>
-          <span>Get e-mail updates about our latest shops and special offers</span>
         </div>
-        <div class="col-md-6 d-flex align-items-center">
-          <form action="#" class="subscribe-form">
-            <div class="form-group d-flex">
-              <input type="text" class="form-control" placeholder="Enter email address" />
-              <input type="submit" value="Subscribe" class="submit px-3" />
+
+
+        <div class="col-xl-5">
+          <div class="row mt-5 pt-3">
+            <div class="col-md-12 d-flex mb-5">
+              <div class="cart-detail cart-total p-3 p-md-4">
+                <h3 class="billing-heading mb-4">Cart Total</h3>
+                <p class="d-flex">
+                  <span>Subtotal</span>
+                  <span>₹ <%= subtotal %></span>
+                </p>
+                <p class="d-flex">
+                  <span>Delivery</span>
+                  <span> ₹ 0.00</span>
+                </p>
+                <p class="d-flex">
+                  <span>Discount</span>
+                  <span> ₹ 0.00</span>
+                </p>
+                <hr />
+                <p class="d-flex total-price">
+
+                  <span>Total</span>
+                  <span id="totalValues" name="amount">₹ <%= grandTotal %></span>
+                </p>
+              </div>
             </div>
-          </form>
-        </div>
+
+            <div class="col-md-12">
+              <div class="cart-detail p-3 p-md-4">
+                <h3 class="billing-heading mb-4">Payment Method</h3>
+                <div class="form-group">
+                  <div class="col-md-12">
+                    <div class="radio">
+                      <label><input type="radio" name="payment" id="cod" value="Cash On Delivery" class="mr-2" checked />
+                        Cash on delivery</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-md-12">
+                    <div class="radio">
+                      <label><input type="radio" name="payment" id="Wallet" value="Wallet" class="mr-2" />
+                        Wallet</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-md-12">
+                    <div class="radio">
+                      <label><input type="radio" name="payment" id="Razorpay" value="Razorpay" class="mr-2" />
+                        RazorPay</label>
+                    </div>
+                  </div>
+                </div>
+
+                <p>
+                  <button id="placeOrderButton" class="btn btn-primary py-3 px-4" type="submit">Place an order</a>
+                </p>
+              </div>
+            </div>
+
+  </form>
+  </div>
+  </div>
+  <!-- .col-md-8 -->
+  </div>
+  </div>
+  </form>
+</section>
+<!-- .section -->
+
+<section class="ftco-section ftco-no-pt ftco-no-pb py-5 bg-light" style="border: 1px solid black; margin-top: -2px;">>
+  <div class="container py-4">
+    <div class="row d-flex justify-content-center py-5">
+      <div class="col-md-6">
+        <h2 style="font-size: 22px" class="mb-0">Subcribe to our Newsletter</h2>
+        <span>Get e-mail updates about our latest shops and special offers</span>
+      </div>
+      <div class="col-md-6 d-flex align-items-center">
+        <form action="#" class="subscribe-form">
+          <div class="form-group d-flex">
+            <input type="text" class="form-control" placeholder="Enter email address" />
+            <input type="submit" value="Subscribe" class="submit px-3" />
+          </div>
+        </form>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <%- include('../layouts/userFooter.ejs')%>
+<%- include('../layouts/userFooter.ejs')%>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/public/assets/js/jquery-1.11.3.min.js"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
-
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 
-    <script>
-      $(document).ready(function () {
-        $('.pay-form').submit(function (e) {
-          e.preventDefault();
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-          swal({
-            title: "Confirmation of order",
-            text: "Are you sure you want to confirm the order?",
 
-            buttons: ["Cancel", "Place order"]
-          }).then((placeorder) => {
 
-            if (placeorder) {
-              const addressId = document.querySelector('input[name="address"]:checked').value
-              const paymentType = document.querySelector('input[name="payment"]:checked').value
-              
+<script>
+  $(document).ready(function() {
+    $('.pay-form').submit(function(e) {
+      e.preventDefault();
 
-              fetch(`/checkout`, {
+      var paymentMethod = $('input[name="payment"]:checked').val();
+
+      var paymentText = "";
+      if (paymentMethod == 'Cash On Delivery') {
+        paymentText = "cash on delivery";
+      } else if (paymentMethod == 'Razorpay') {
+        paymentText = "Razorpay";
+      }
+
+
+      if (!$('input[name="address"]:checked').length) {
+
+        alert("Please select an address before placing the order.");
+        return;
+      }
+
+      swal({
+        title: "Confirmation of order",
+        text: "Are you sure you want to confirm the order?",
+        buttons: ["Cancel", "Place order"]
+      }).then((placeorder) => {
+
+        if (placeorder) {
+          const addressId = document.querySelector('input[name="address"]:checked').value
+          const paymentMethod = document.querySelector('input[name="payment"]:checked').value
+          console.log(paymentMethod);
+          if (paymentMethod == 'Razorpay') {
+            let formData = $('.pay-form').serialize()
+            $.ajax({
+              url: "/createOrder",
+              type: "POST",
+              data: formData,
+              success: function(res) {
+
+                if (res.success) {
+
+                  let options = {
+
+                    "key": "" + res.key_id + "",
+                    "amount": "" + res.amount + "",
+                    "currency": "INR",
+                    "name": "Orders",
+                    "description": "Test transaction",
+                    "order_id": "" + res.order_id,
+                    "handler": function(response) {
+                      verifyPayment(response)
+                    },
+                    "prefill": {
+                      "name": "" + res.name + "",
+                      "email": "" + res.email + "",
+                      "contact": "" + res.mobile + ""
+                    },
+                    "notes": {
+                      "address": "RazorPay Corporate Office"
+                    },
+                    "theme": {
+                      "color": "green"
+                    }
+                  }
+                  var rzp1 = new Razorpay(options)
+
+                  rzp1.on('payment.failed', function(response) {
+                    swal("payment failed", "", "error")
+                  })
+                  rzp1.open()
+                } else {
+                  alert(res.msg)
+                }
+              }
+            })
+          } else {
+            var form = $('.pay-form')
+            var url = form.attr('action')
+            var method = form.attr('method')
+            $('<input>').attr({
+              type: 'hidden',
+              name: 'paymentMethod',
+              value: paymentMethod
+            }).appendTo(form)
+            form.attr('action', '/checkout')
+
+
+
+            fetch(`/checkout`, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
 
                 },
-                body: JSON.stringify({ addressId, paymentType }),
+                body: JSON.stringify({
+                  addressId,
+                  paymentType: paymentMethod
+                }),
               })
-                .then(response => response.json())
-                .then(data => {
-                  if (data.success) {
-                    swal({
-                      title: "Order has been placed successfully",
-                      timer: 2000
-                    });
-                    setTimeout(function () {
-                      location.href = `/orderDetails/${data.orderId}`;
-                    }, 3000);
-                  } 
-                })
-                .catch(error => {
-                  
-                  console.log(error);
-                })
-            }
-          });
-        });
+              .then(response => response.json())
+              .then(data => {
+                if (data.success) {
+                  swal({
+                    title: "Order has been placed successfully",
+                    timer: 2000
+                  });
+                  setTimeout(function() {
+                    location.href = `/orderDetails/${data.orderId}`;
+                  }, 3000);
+                }
+              })
+              .catch(error => {
 
-        // function verifyPayment() {
-
-        //   $.ajax({
-        //     url: '/checkout',
-        //     method: 'POST',
-
-        //     success: function () {
-        //       swal({
-        //         title: "Order has been placed successfully",
-        //         timer: 2000
-        //       });
-        //       setTimeout(function () {
-        //         location.href = "/orderDetails";
-        //       }, 3000);
-        //     }
-        //   });
-        // }
+                console.log(error);
+              })
+          }
+        }
       });
-    </script>
+    });
 
-    <!-- 
+    function verifyPayment(response) {
+      const addressId = document.querySelector('input[name="address"]:checked').value
+      const paymentMethod = document.querySelector('input[name="payment"]:checked').value
+      console.log('addressId:')
+      console.log(addressId)
+      fetch('/verifyPayment', {
+
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            addressId,
+            paymentType: paymentMethod,
+            razorpayOrderId: response.razorpay_order_id,
+            razorpayPaymentId: response.razorpay_payment_id,
+            secret: response.razorpay_signature
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status) {
+            const container = document.querySelector('.container');
+            container.style.display = 'none';
+            swal({
+              title: "Order has been placed successfully",
+              timer: 2000
+            });
+            setTimeout(function() {
+              location.href = "/orderDetails";
+            }, 3000);
+          } else {
+            swal("Payment failed");
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+  });
+</script>
+
+<!-- 
     <script>
       $(document).ready(function () {
         $('.pay-form').submit(function (e) {
@@ -256,7 +372,7 @@
       }
     </script> -->
 
-    <!-- <script>
+<!-- <script>
     $(document).ready(function () {
       
       $('input[type="radio"][name="address"]').change(function () {

@@ -5,9 +5,10 @@
     <!-- Page wrapper  -->
     <!-- ============================================================== -->
 
-    </div>
+
 
     <div class="container" style="padding-left: 100px;">
+
 
 
         <section class="ftco-section">
@@ -42,8 +43,10 @@
                                     <th>Price</th>
                                     <th>Total</th>
                                     <th>Date</th>
+
                                     <th>Status</th>
-                                    
+                                    <th>Action</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -70,7 +73,7 @@
                                             <td>
                                                 <% for (let j=0; j < orders[i].orderItems.length; j++) { %>
                                                     <p>
-                                                        <%= orders[i].orderItems[j].kg %>
+                                                        <%= orders[i].orderItems[j].kg %>kg
                                                     </p>
                                                     <% } %>
                                             </td>
@@ -87,39 +90,25 @@
                                             <td>
                                                 <%= orders[i].dateOrdered.toDateString() %>
                                             </td>
+                                            <td>
+                                                <%= orders[i].status %>
+
+                                            </td>
 
                                             <td>
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                      <%= orders[i].status %>
-                                                    </button>
-                                                    <div class="dropdown-menu">
-                                                      <a class="dropdown-item" href="#">Ordered</a>
-                                                      <a class="dropdown-item" href="#">Shipped</a>
-                                                      <a class="dropdown-item" href="#">Delivered</a>
-                                                      <a class="dropdown-item" href="#">Return</a>
-                                                      
-                                                    </div>
-                                                  </div>
+                                                <button type="button" class="btn btn-secondary"><a
+                                                        class="text-light text-decoration-none cancel-link"
+                                                        href="/admin/orderDetails?id=<%=orders[i]._id %>">View
+                                                        details</a></button>
                                             </td>
-                                            
+
+
+
+
                                         </tr>
 
 
                                         <% } %>
-
-                                            <!-- <td>
-                                              <div class="btn bg-secondary">
-                                                <a class="text-light text-decoration-none unblock-link" href="">Unblock</a>
-                                              </div>
-                                            </td>
-                                            
-                                            <td>
-                                              <div class="btn bg-secondary">
-                                                <a class="text-light text-decoration-none unblock-link" href="">Block</a>
-                                              </div>
-                                            </td> -->
-
                                             </tr>
 
                                             <% } else { %>
@@ -133,8 +122,13 @@
                 </div>
             </div>
     </div>
+
     </section>
     </div>
+
+
+
+
 
 
     </body>

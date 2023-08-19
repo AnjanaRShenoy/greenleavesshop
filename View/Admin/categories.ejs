@@ -6,6 +6,7 @@
 <br>
 <br>
         <div class="container" style= " padding-left: 180px;">
+          
             
             
             <!-- <section class="ftco-section">
@@ -20,7 +21,7 @@
             <br>
             <br>
             <br>
-                <div class="container">
+                <div class="container" >
                     <div class="row justify-content-center">
                         <div class="col-md-6 text-center mb-5">
                             <h2 class="heading-section">Category list</h2>
@@ -28,7 +29,7 @@
                     </div>
                 </div>
                 
-        <div class="row">
+        <div class="row text-center">
             <!-- <div class="col-md-12">
                 <h4 class="text-center mb-4"></h4> -->
                 <div class="table-wrap">
@@ -38,7 +39,7 @@
                         <th style="width: 15%;">Category ID</th>
                       <th style="width: 15%;">Category Name</th>
                       <th style="width: 20%;">Category Offer</th>
-                      
+                      <th style="width: 20%;">Image</th>
                       <th style="width: 20%;">Action</th>
                         <!-- <th>Status</th>  -->
                       </tr>
@@ -48,7 +49,7 @@
                         <tr>
                           <td><%= category[i]._id %></td>
                           <td><%= category[i].categoryName %></td>
-                          <td><%= category[i].categoryOffer%></td>
+                          <td><%= category[i].categoryOffer%>%</td>
                           
                           <td>
                             <img src="/images/<%=category[i].categoryImage[0]%>" alt="Product Image"
@@ -66,6 +67,12 @@
                               </div>
                             </td>
                             <% } %>
+                            <td>
+                              <div class="btn bg-secondary">
+                                <a class="text-light text-decoration-none unblock-link" href="/admin/editCategory?id=<%= category[i]._id %>">Edit</a>
+                              </div>
+                            </td>
+                            
                         </tr>
                         <!-- Add more category rows here -->
                         <% } %>
@@ -76,3 +83,6 @@
         </div>
 
         <%- include('../layouts/adminFooter.ejs')%>
+
+
+

@@ -50,7 +50,7 @@
                 <td>
                   <% for (let j=0; j < orders[i].orderItems.length; j++) { %>
                     
-                      <div class="img" style="background-image:url(/images/<%= orders[i].orderItems[j].productId.productImage[0] %>); width: 50px; height: 50px; object-fit: cover">
+                      <div class="img" style="background-image:url(/images/<%= orders[i].orderItems[j].productId.productImage[0] %>); width: 50px; height: 50px; object-fit: cover"></div>
                 
                 <% } %>
                 </td>
@@ -126,7 +126,7 @@
 			</div>
 		</div>
     <br>
-    <section class="ftco-section ftco-no-pt ftco-no-pb py-5 bg-light">
+    <section class="ftco-section ftco-no-pt ftco-no-pb py-5 bg-light" style="border: 1px solid black; margin-top: -2px;">
       <div class="container py-4">
       <div class="row d-flex justify-content-center py-5">
         <div class="col-md-6">

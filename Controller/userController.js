@@ -2,11 +2,11 @@ const User = require("../Model/userModel");
 const Category = require("../Model/categoryModel");
 const Product = require("../Model/productModel");
 const Cart = require("../Model/cartModel");
-const Order=require("../Model/orderModel")
+const Order = require("../Model/orderModel");
 
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
-const config = require("../Configuration/userConfig");
+const config = require("../Configuration/connections");
 const { default: mongoose } = require("mongoose");
 const user_route = require("../Routes/userRoute");
 const randormString = require("randomstring");
@@ -14,34 +14,92 @@ const { LEGAL_TCP_SOCKET_OPTIONS } = require("mongodb");
 const { name } = require("ejs");
 const categoryModel = require("../Model/categoryModel");
 
-
 // to render the guest user page
-const guestUser = async (req, res) => {
+const guestUser = async (req, res, next) => {
   try {
     const productsData = await Product.find({ productBlock: false });
 
     res.render("guestUserPage", { productsData: productsData });
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-
-// hashing password
-const securepassword = async (password) => {
-  try {
-    const passwordhash = await bcrypt.hash(password, 10);
-    return passwordhash;
-  } catch (error) {
-    console.error(error.message);
-
+  } catch (err) {
+    next(err)
   }
 };
 
-// to send mail
-const sendverifyMail = async (name, email, user_id) => {
+// hashing password
+const securepassword = async (password, next) => {
   try {
+    const passwordhash = await bcrypt.hash(password, 10);
+    return passwordhash;
+  } catch (err) {
+    next(err)
+  }
+};
 
+
+;
+
+// to load signup page
+const loadsignup = async (req, res, next) => {
+  try {
+    res.render("signup");
+  } catch (err) {
+    next(err)
+  }
+};
+
+// to add users
+const insertUser = async (req, res, next) => {
+  
+  
+  try {
+    const existingUserEmail = await User.findOne({ email: req.body.email });
+    if (existingUserEmail) {
+      res.render("signup", { errorMessage: "Email already exists" });
+    }
+
+    const existingUserPhoneNumber = await User.findOne({
+      phonenumber: req.body.phonenumber,
+    });
+
+    if (existingUserPhoneNumber) {
+      res.render("signup", { errorMessage: "Phonenumber already exists" });
+    }
+
+    const password = req.body.password;
+    const repassword = req.body.repassword;
+    req.session.signupUser = req.body
+
+    if (req.body.password === req.body.repassword) {
+      const spassword = await securepassword(req.body.password);
+      req.session.otp = Math.floor(1000 + Math.random() * 9000);
+
+      
+      sendverifyMail(req.body.name, req.body.email, req.session.otp);
+      res.render("otpPage", {
+        successMessage:
+          "Your signup has been successful.Please verify your mail",
+      });
+    } else {
+      res.render("signup", { errorMessage: "Your password doesnt match" });
+    }
+  } catch (err) {
+    next(err)
+  }
+};
+
+// to render OTP page
+const otpPage = async (req, res, next) => {
+  try {
+    res.render('otpPage')
+  } catch (err) {
+    next(err)
+  }
+}
+
+// to send mail
+const sendverifyMail = async (name, email, otp) => {
+  try {
+    
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       post: 587,
@@ -56,30 +114,53 @@ const sendverifyMail = async (name, email, user_id) => {
     const mailoptions = {
       from: config.ADMIN_EMAIL,
       to: email,
-      subject: "For verification mail",
-      html:
-        "<p>Hello" +
-        name +
-        ',please click here to <a href= "http://127.0.0.1:3000/verify?id=' +
-        user_id +
-        '">Verify</a>your mail.</p>',
+      subject: "OTP for verification mail",
+      html: `<p> hi ${name},Use this otp ${otp} to login</p>`,
+      text: `hi ${name},Use this otp ${otp} to login`,
     };
 
     transporter.sendMail(mailoptions, function (error, info) {
       if (error) {
         console.log(error);
       } else {
-        console.log("Email has been sent-", info.response);
+        console.log("OTP has been sent to your email-", info.response);
       }
     });
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
+  }
+};
 
+
+
+// to check otp and login
+const checkOtp = async (req, res, next) => {
+  
+  try {
+    let spassword = await securepassword(req.session.signupUser.password)
+    const otpcheck = req.body.otp;
+    if(req.session.otp == otpcheck){
+      let newUser = new User({
+        name:req.session.signupUser.name,
+        email:req.session.signupUser.email,
+        phonenumber:req.session.signupUser.phonenumber,
+        password :spassword
+      })
+
+      newUser.save().then((status)=>{
+        
+        res.redirect('/login')
+      })
+      
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.render("404");
   }
 };
 
 // to reset password send mail
-const sendresetpasswordmail = async (name, email, token) => {
+const sendresetpasswordmail = async (name, email, token, next) => {
   try {
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -111,99 +192,26 @@ const sendresetpasswordmail = async (name, email, token) => {
         console.log("Email has been sent-", info.response);
       }
     });
-  } catch (error) {
-    console.log(error.message);
-
+  } catch (err) {
+    next(err)
   }
 };
 
-// to verify mail
-const verifymail = async (req, res) => {
-  try {
-    const updatedInfo = await User.updateOne(
-      { _id: req.query.id },
-      { $set: { is_verified: 1 } }
-    );
-
-    res.render("login");
-  } catch (error) {
-    console.log(error.message);
-
-  }
-};
-
-// to load signup page
-const loadsignup = async (req, res) => {
-  try {
-    res.render("signup");
-  } catch (error) {
-    console.log(error.message);
-
-  }
-};
-
-// to add users
-const insertUser = async (req, res) => {
-  try {
-
-    const existingUserEmail = await User.findOne({ email: req.body.email });
-    if (existingUserEmail) {
-      res.render("signup", { errorMessage: "Email already exists" });
-    }
-
-    const existingUserPhoneNumber = await User.findOne({ phonenumber: req.body.phonenumber });
-    if (existingUserPhoneNumber) {
-      res.render("signup", { errorMessage: "Phonenumber already exists" });
-    }
-
-    if (req.body.password === req.body.repassword) {
-      const spassword = await securepassword(req.body.password);
-
-      const user = new User({
-        name: req.body.name,
-        email: req.body.email,
-        phonenumber: req.body.phonenumber,
-        password: spassword,
-
-        is_admin: 0,
-      });
-
-      const userData = await user.save();
-
-      if (userData) {
-        sendverifyMail(req.body.name, req.body.email, userData._id);
-        res.render("signup", {
-          successMessage:
-            "Your signup has been successful.Please verify your mail",
-        });
-      } else {
-        res.render("signup", { errorMessage: "Your signup has been failed" });
-      }
-    } else {
-      res.render("signup", { errorMessage: "Your password doesnt match" })
-    }
-  } catch (error) {
-    console.trace(error);
-
-  }
-};
 
 // login user
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   try {
     res.render("login");
-  } catch (error) {
-    console.log(error);
-
+  } catch (err) {
+    next(err)
   }
 };
 
 // verify login
-const verifylogin = async (req, res) => {
+const verifylogin = async (req, res, next) => {
   try {
     const email = req.body.email;
     const password = req.body.password;
-
 
     const userData = await User.findOne({ email: email });
 
@@ -212,16 +220,21 @@ const verifylogin = async (req, res) => {
 
       if (!isBlocked) {
         if (userData) {
-          const passwordMatch = await bcrypt.compare(password, userData.password);
+          const passwordMatch = await bcrypt.compare(
+            password,
+            userData.password
+          );
           if (passwordMatch) {
-            if (userData.is_verified == 1) {
+            if (userData.is_verified == 1 && userData.is_admin !== 1) {
               {
                 req.session.user_id = userData._id;
 
                 res.redirect("/home");
               }
             } else {
-              res.render("login", { successMessage: "please verify your mail" });
+              res.render("login", {
+                successMessage: "please verify your mail",
+              });
             }
           } else {
             res.render("login", { errorMessage: "password is wrong" });
@@ -230,72 +243,68 @@ const verifylogin = async (req, res) => {
           res.render("login", { errorMessage: "incorrect login credentials!" });
         }
       } else {
-        res.render("login", { errorMessage: "Sorry, You have been blocked by the admin" })
+        res.render("login", {
+          errorMessage: "Sorry, You have been blocked by the admin",
+        });
       }
     } else {
-      res.render("login", { errorMessage: "Please signup" })
+      res.render("login", { errorMessage: "Please signup" });
     }
-  } catch (error) {
-    console.log(error.message);
-
+  } catch (err) {
+    next(err)
   }
 };
 
 // loading Home page after login
-const loadHome = async (req, res) => {
+const loadHome = async (req, res, next) => {
   try {
     const productsData = await Product.find({ productBlock: false });
 
     res.render("home", { productsData: productsData });
-  } catch (error) {
-    console.log(error.message);
-
+  } catch (err) {
+    next(err)
   }
 };
 
 // to render contact page
-const contact = async (req, res) => {
+const contact = async (req, res, next) => {
   try {
     res.render("contact");
-  } catch (error) {
-    console.log(error.message);
-
+  } catch (err) {
+    next(err)
   }
 };
 
 // to render about page
-const about = async (req, res) => {
+const about = async (req, res, next) => {
   try {
     res.render("about");
-  } catch (error) {
-    console.log(error.message);
-
+  } catch (err) {
+    next(err)
   }
 };
 
 // user logout
-const userlogout = async (req, res) => {
+const userlogout = async (req, res, next) => {
   try {
     delete req.session.user_id;
     res.redirect("/");
-  } catch (error) {
-    console.log(error.message);
-
+  } catch (err) {
+    next(err)
   }
 };
 
 // to load forgot password
-const forgetload = async (req, res) => {
+const forgetload = async (req, res, next) => {
   try {
     res.render("forgotpassword");
-  } catch (error) {
-    console.log(error.message);
-
+  } catch (err) {
+    next(err)
   }
 };
 
 // verify to forgot password and reset
-const forgetverify = async (req, res) => {
+const forgetverify = async (req, res, next) => {
   try {
     const email = req.body.email;
     req.session.email = email;
@@ -306,7 +315,7 @@ const forgetverify = async (req, res) => {
       if (userData.is_verified === 0) {
         // const updatedData= await User.updateOne({email:email},{$set:{token:randomString}})
         // sendresetpasswordmail(userData.name,userData.email,randomString)
-        res.render("forgot", { successMessage: "please verify your mail" });
+        res.render("forgotpassword", { successMessage: "please verify your mail" });
       } else {
         const randomString = randormString.generate();
         const updatedData = await User.updateOne(
@@ -323,14 +332,13 @@ const forgetverify = async (req, res) => {
         errorMessage: "User email is incorrect.",
       });
     }
-  } catch (error) {
-    console.log(error.message);
-
+  } catch (err) {
+    next(err)
   }
 };
 
 // forgot password load
-const forgetpasswordload = async (req, res) => {
+const forgetpasswordload = async (req, res, next) => {
   try {
     const token = req.query.token;
 
@@ -341,22 +349,19 @@ const forgetpasswordload = async (req, res) => {
     } else {
       res.render("404", { errorMessage: "Page not found" });
     }
-  } catch (error) {
-    console.log(error.message);
-
+  } catch (err) {
+    next(err)
   }
 };
 
 // to reset the password
-const resetpassword = async (req, res) => {
+const resetpassword = async (req, res, next) => {
   try {
     const newPassword = req.body.newpassword;
+    
     const rePassword = req.body.repassword;
-    if (!(await validatepassword(req.body.newpassword))) {
-      return res.render("resetforgotpassword", {
-        errorMessage: "Password must be atleast 8 letters",
-      });
-    }
+    
+    
     const email = req.session.email;
 
     if (newPassword === rePassword) {
@@ -379,68 +384,68 @@ const resetpassword = async (req, res) => {
         errorMessage: "password is not matching",
       });
     }
-  } catch (error) {
-    console.log(error.message);
-
+  } catch (err) {
+    next(err)
   }
 };
 
 // To render user profile
-const userProfile = async (req, res) => {
+const userProfile = async (req, res, next) => {
   try {
-    const id = req.session.user_id
-    const userData = await User.findOne({ _id: id })
-
+    const id = req.session.user_id;
+    const userData = await User.findOne({ _id: id });
 
     if (userData) {
-      res.render("userProfile", { userData: userData })
+      res.render("userProfile", { userData: userData });
     }
-
-  } catch (error) {
-    console.log(error.message);
+  } catch (err) {
+    next(err)
   }
-}
+};
 
 // to edit the address for user profile
-const profileAddressAdd = async (req, res) => {
+const profileAddressAdd = async (req, res, next) => {
   try {
-    const id = req.session.user_id
+    const id = req.session.user_id;
+    const name = req.body.name;
+    const phonenumber = req.body.phonenumber;
     const newAddress = {
+      name : req.body.name,
+      phonenumber:req.body.phonenumber,
       address1: req.body.address1,
       address2: req.body.address2,
       state: req.body.state,
-      pincode: req.body.pincode
-    }
+      pincode: req.body.pincode,
+    };
     // console.log(address);
-    const user = await User.findByIdAndUpdate(id,
+    const user = await User.findByIdAndUpdate(
+      id,
       {
         $set: {
-          address: newAddress
-        }
+          name: name,
+          phonenumber: phonenumber,
+          address: newAddress,
+        },
       },
-      { new: true })
-
-
-
-
-
-    res.redirect("userProfile")
-  } catch (error) {
-    console.log(error.message);
+      { new: true }
+    );
+    
+    res.redirect("userProfile");
+  } catch (err) {
+    next(err)
   }
-}
+};
 
 // to render shop from home page
-const shop = async (req, res) => {
+const shop = async (req, res, next) => {
   try {
     const ITEMS_PER_PAGE = 8;
-    const category = req.params.category
+    const category = req.params.category;
 
-    const filter = { productBlock: false }
-    const categories = await Category.find({ categoryBlock: false })
+    const filter = { productBlock: false };
+    const categories = await Category.find({ categoryBlock: false });
 
-    if (category !== 'all') filter.categoryName = category
-
+    if (category !== "all") filter.categoryName = category;
 
     const page = parseInt(req.params.page) || 1;
     const skipItems = (page - 1) * ITEMS_PER_PAGE;
@@ -453,25 +458,22 @@ const shop = async (req, res) => {
       .skip(skipItems)
       .limit(ITEMS_PER_PAGE);
 
-
     res.render("shop", {
       productsData: productsData,
       categories: categories,
       currentPage: page,
       totalPages: totalPages,
-      category
-
+      category,
     });
-  } catch (error) {
-    console.log(error);
-
+  } catch (err) {
+    next(err)
   }
 };
 
 //
 
 // to go to individual product page
-const singleproduct = async (req, res) => {
+const singleproduct = async (req, res, next) => {
   try {
     const productId = req.query.id;
     const singleProduct = await Product.findOne({ _id: productId });
@@ -481,14 +483,13 @@ const singleproduct = async (req, res) => {
       singleProduct: singleProduct,
       allProducts: allProducts,
     });
-  } catch {
-    console.log(error.message);
-
+  } catch (err) {
+    next(err)
   }
 };
 
 // to Add into cart
-const addToCart = async (req, res) => {
+const addToCart = async (req, res, next) => {
   try {
     const userId = req.session.user_id;
 
@@ -499,7 +500,6 @@ const addToCart = async (req, res) => {
     const myCart = await Cart.findOne({ user_id: userId });
     const product = await Product.findOne({ _id: productId });
     // const count= await Product.findOne({kg: count})
-
 
     if (myCart) {
       const existingproductindex = myCart?.product.findIndex(
@@ -512,7 +512,6 @@ const addToCart = async (req, res) => {
           kg: count,
           total: product.price * count,
           price: product.price,
-
         });
         // console.log('total',total);
         (myCart.grandTotal += product.price), await myCart.save();
@@ -544,34 +543,36 @@ const addToCart = async (req, res) => {
     }
 
     res.json({ message: "product added to cart" });
-  } catch (error) {
-    console.log(error.message);
+  } catch (err) {
+
     res
       .status(500)
       .json({ message: "An error occured while adding the product" });
+    next(err)
   }
 };
 
 // to add address from checkout page
-const addAddress = async (req, res) => {
+const addAddress = async (req, res, next) => {
   try {
-    res.render('addAddress')
-  } catch (error) {
-    console.log(error.message);
+    res.render("addAddress");
+  } catch (err) {
+    next(err)
   }
-}
+};
 
-const addnewAddress = async (req, res) => {
+const addnewAddress = async (req, res, next) => {
   try {
-    const id = req.session.user_id
-    const name = req.body.name
-    const phonenumber = req.body.phonenumber
-    const address1 = req.body.address1
-    const address2 = req.body.address2
-    const state = req.body.state
+    const id = req.session.user_id;
+    const name = req.body.name;
+    const phonenumber = req.body.phonenumber;
+    const address1 = req.body.address1;
+    const address2 = req.body.address2;
+    const state = req.body.state;
     const pincode = req.body.pincode;
 
-    const user = await User.findByIdAndUpdate(id,
+    const user = await User.findByIdAndUpdate(
+      id,
       {
         $push: {
           address: {
@@ -580,19 +581,20 @@ const addnewAddress = async (req, res) => {
             address1: address1,
             address2: address2,
             state: state,
-            pincode: pincode
-          }
-        }
+            pincode: pincode,
+          },
+        },
       },
-      { new: true })
-    res.redirect("checkout")
-  } catch (error) {
-    console.log(error.message);
+      { new: true }
+    );
+    res.redirect("checkout");
+  } catch (err) {
+    next(err)
   }
-}
+};
 
 // to render the order history of user
-const orderList = async (req, res) => {
+const orderList = async (req, res, next) => {
   try {
     const userId = req.session.user_id;
     const page = parseInt(req.params.page) || 1; // Get the requested page number, default to 1 if not provided
@@ -602,58 +604,70 @@ const orderList = async (req, res) => {
     const totalPages = Math.ceil(totalOrders / itemsPerPage);
 
     const skip = (page - 1) * itemsPerPage;
-    
+
     const orders = await Order.find({ user_id: userId })
-      .populate('orderItems.productId') 
+      .populate("orderItems.productId")
       .sort({ dateOrdered: -1 })
       .skip(skip)
       .limit(itemsPerPage);
-      
+
     res.render("orderList", { orders, currentPage: page, totalPages });
-
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    next(err)
   }
-}
+};
 
+// to cancel the order
+const cancelOrder = async (req, res, next) => {
+  try {
+    const id = req.query.id;
 
-// to cancel the order 
-const cancelOrder=async(req,res)=>{
-  try{
-      const id=req.query.id
-      
-      const cancel= await Order.updateOne(
-          { _id:id},
-          {$set:{status:"cancelled"}})
-      res.redirect("/orderList")  
-  }catch(error){
-      console.log(error);
+    const cancel = await Order.updateOne(
+      { _id: id },
+      { $set: { status: "return" } }
+    );
+    res.redirect("/orderList");
+
+  } catch (err) {
+    next(err)
   }
-}
+};
 
 // to view the full details from order page
-const orderFullDetails=async(req,res)=>{
-  try{
+const orderFullDetails = async (req, res, next) => {
+  try {
     const userId = req.session.user_id;
-      const orderId=req.query.id
-      const orders = await Order.findOne({ user_id: userId, _id:orderId })       
-        .populate('orderItems.productId')
-        .sort({ dateOrdered: -1 })
-      const order = await Order.findById(orderId)
-      
-      
-    res.render("orderFullDetails", { orders,order })
-  }catch(error){
-    console.log(error);
+    const orderId = req.query.id;
+    const orders = await Order.findOne({ user_id: userId, _id: orderId })
+      .populate("orderItems.productId")
+      .sort({ dateOrdered: -1 });
+    const order = await Order.findById(orderId);
+
+    res.render("orderFullDetails", { orders, order });
+  } catch (err) {
+    next(err)
   }
-}
+};
+
+// const createOrder= async(req,res,next)=>{
+//   try{
+//     let amount= req.body.amount * 100
+    
+      
+//     }
+//   }catch(err){
+//     next(err)
+//   }
+// }
+
 
 
 module.exports = {
   guestUser,
   loadsignup,
   insertUser,
-  verifymail,
+  otpPage,
+  checkOtp,
   sendverifyMail,
   securepassword,
   login,
@@ -677,4 +691,5 @@ module.exports = {
   orderList,
   cancelOrder,
   orderFullDetails,
+
 };

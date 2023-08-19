@@ -1,54 +1,228 @@
 <%- include('../layouts/adminHeader.ejs')%>
 
-        <div class="col-md-6" style="margin-left: 290px;">
-            <br><br>
-            <div class="add-product">
-              <h2>Edit Product</h2>
+  <div class="col-md-6" style="margin-left: 290px;">
+    
+    <br><br>
+    <div class="add-product">
+      <h2>Edit Product</h2>
+
+      <br>
+      <br>
+      <form id="addForm" onsubmit="return validateForm()" action="/admin/editProducts" method="post"
+        enctype="multipart/form-data">
+        <div class="form-group">
+          <span class="formerror text-danger" id="name-info"></span>
+          <label for="product-name">Product Name</label>
+          <input type="text" name="productname" class="form-control" id="product-name" onkeyup="validateName()"
+            value="<%=products.productName %>">
+            <input type="text" name="id" class="form-control" id="proId" onkeyup="validateName()"
+            value="<%=products._id %>" hidden>
+        </div>
+        <div class="form-group">
+          <span class="formerror text-danger" id="description-info"></span>
+          <label for="product-description">Description</label>
+          <input type="text" class="form-control" name="description" id="product-description"
+            onkeyup="validateDescription()" rows="3" value="<%=products.productDescription %>">
+        </div>
+        <div class="m-4">
+          <span class="formerror text-danger" id="image-info"></span>
+          <label style="color: #fff; font-weight: 300;">Upload
+            Images</label><br>
+            <div id="image-preview-container"></div>
+            <input type="file" class="form-control-file custom-file-input" id="preview-image" name="productImage"
+              onchange="previewImage(event)" style="opacity: 100" value="" multiple>
               
-              <br>
-              <br>
-              <form action="/admin/editProducts" method="post" enctype="multipart/form-data">
-                <div class="form-group">
-                  <label for="product-name">Product Name</label>
-                  <input type="text" name="productname" class="form-control" id="product-name" value="<%=products.productName %>">
-                </div>
-                <div class="form-group">
-                  <label for="product-description">Description</label>
-                  <input type="text" class="form-control" name="description" id="product-description" rows="3"  value="<%=products.productDescription %>">
-                </div>
-                <div class="m-4">
-                  <label style="color: #fff; font-weight: 300;">Upload Images</label><br>
-                  <input type="file" class="form-control-file custom-file-input" id="preview-image" name="productImage" onchange="previewImage(event)" style="opacity: 100" multiple>
-                </div>
-                
-                <div class="form-group">
-                  <label for="product-category">Category</label>
-                  <select name="category" class="form-control" id="product-category">
-                    <option value="">Select category</option>
-                    <% for (let i = 0; i < categories.length; i++) {
-                         if (!categories[i].categoryBlock) { %>
-                           <option value="<%= categories[i].categoryName %>"><%= categories[i].categoryName %></option>
-                    <% }
-                       } %>
-                  </select>
-                </div>
-                
-              
-                <div class="form-group">
-                  <label for="product-price">Price</label>
-                  <input type="number" name="price" class="form-control" id="product-price" value="<%=products.price %>">
-                </div>
-                <div class="form-group">
-                  <label for="product-kg">Kg</label>
-                  <input type="number" name="kg" class="form-control" id="product-kg" value="<%=products.kg %>">
-                </div>
-                
-                <button type="submit" class="btn btn-primary">Edit Product</button>
-              </form>
-            </div>
+        </div>
+        
+          <div class="form-group">
+            <span class="formerror text-danger" id="category-info"></span>
+            <label for="product-category">Category</label>
+            <select name="category" class="form-control" id="product-category" onkeyup="validateCategory()">
+              <option value="">Select category</option>
+              <% for (let i=0; i < categories.length; i++) { if (!categories[i].categoryBlock) { %>
+                <option value="<%= categories[i].categoryName %>">
+                  <%= categories[i].categoryName %>
+                </option>
+                <% } } %>
+            </select>
           </div>
 
-         
+
+          <div class="form-group">
+            <span class="formerror text-danger" id="price-info"></span>
+            <label for="product-price">Price</label>
+            <input type="string" name="price" class="form-control" id="product-price" onkeyup="validatePrice()"
+              value="<%=products.price %>">
+          </div>
+          <div class="form-group">
+            <span class="formerror text-danger" id="kg-info"></span>
+            <label for="product-kg">Kg</label>
+            <input type="string" name="kg" class="form-control" id="product-kg" onkeyup="validateKg()"
+              value="<%=products.kg %>">
+          </div>
+
+          <button type="submit" class="btn btn-primary">Edit Product</button>
+      </form>
+    </div>
+  </div>
 
 
-          <%- include('../layouts/adminFooter.ejs')%>
+
+
+  <%- include('../layouts/adminFooter.ejs')%>
+
+  
+  <script>
+    function previewImage(event) {
+      const previewImages = document.getElementById('preview-image')
+      for (let i = 0; i < event.target.files.length; i++) {
+        const file = event.target.files[i]
+        const reader = new FileReader()
+        reader.onload = function (e) {
+          previewImages[i].src = e.target.result
+        }
+        reader.readAsDataURL(file)
+      }
+    }
+  </script>
+
+
+    <script>
+
+      
+ 
+
+      var nameError = document.getElementById("name-info");
+      var descriptionError = document.getElementById("description-info");
+      
+      var categoryError = document.getElementById("category-info");
+      var priceError = document.getElementById("price-info");
+      var kgError = document.getElementById("kg-info");
+      var submitError = document.getElementById("submit-error")
+      var addform = document.getElementById('addForm')
+
+      function validateForm() {
+        event.preventDefault();
+        if (
+          !validateName() &&
+          !validateDescription() &&
+          
+          !validateCategory() &&
+          !validatePrice() &&
+          !validateKg()
+        ) {
+          submitError.style.display = "block";
+          submitError.innerHTML = "Please Fix the errors to Register";
+          event.preventDefault();
+          setTimeout(function () {
+            submitError.style.display = "none ";
+          }, 3000);
+          return false;
+        } else if (
+          !validateName() ||
+          !validateDescription() ||
+          
+          !validateCategory() ||
+          !validatePrice() ||
+          !validateKg()
+        ) {
+          submitError.style.display = "block";
+          submitError.innerHTML = "Please Fix the errors to Register";
+          event.preventDefault();
+          setTimeout(function () {
+            submitError.style.display = "none";
+          }, 3000);
+          return false;
+        } else {
+
+          // Return true if all validations pass
+          addform.submit()
+        }
+      }
+      function validateName() {
+        var name = document.getElementById("product-name").value.trim();
+
+        if (name.length === 0) {
+          nameError.innerHTML = "Product name is required";
+          return false;
+        }
+
+        if (!name.replace(/\s/g, "").length) {
+          nameError.innerHTML = "Product Name cannot be just spaces";
+          return false;
+        } else {
+          nameError.innerHTML = "";
+          return true;
+        }
+      }
+      function validateDescription() {
+        var description = document.getElementById("product-description").value.trim();
+
+        if (description.length === 0) {
+          descriptionError.innerHTML = "Product description is required";
+          return false;
+        }
+
+        if (!description.replace(/\s/g, "").length) {
+          descriptionError.innerHTML = "Description cannot be just spaces";
+          return false;
+        } else if (description.length < 50) {
+          descriptionError.innerHTML = "Product description should be at least 50 characters.";
+          return false;
+        } else {
+          descriptionError.innerHTML = "";
+          return true;
+        }
+      }
+      
+
+      function validateCategory() {
+        var category = document.getElementById("product-category").value.trim();
+
+        if (category === "") {
+          categoryError.innerHTML = "Product category is required";
+          return false;
+        }
+        else {
+          categoryError.innerHTML = "";
+          return true;
+        }
+
+      }
+
+      function validatePrice() {
+        var price = document.getElementById("product-price").value.trim();
+
+        if (price.length === 0) {
+          priceError.innerHTML = "Product price is required";
+          return false;
+        }
+        if (isNaN(price) || parseFloat(price) <= 0) {
+          priceError.innerHTML = "Please enter a valid price"
+          return false;
+        }
+
+        else {
+          priceError.innerHTML = "";
+          return true;
+        }
+      }
+
+      function validateKg() {
+        var kg = document.getElementById("product-kg").value.trim();
+
+        if (kg.length === 0) {
+          kgError.innerHTML = "Product quantity is required";
+          return false;
+        }
+        if (kg < 0) {
+          kgError.innerHTML = "Please enter a valid quantity"
+          return false
+        }
+        else {
+          kgError.innerHTML = "";
+          return true;
+        }
+      }
+
+    </script>

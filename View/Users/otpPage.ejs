@@ -5,6 +5,8 @@
     <title>GreenLeaves</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
     <!--===============================================================================================-->
     <link rel="icon" type="image/png" href="images/icons/favicon.ico" />
     <!--===============================================================================================-->
@@ -23,7 +25,7 @@
     <link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
-    <!--===============================================================================================-->
+    <!-- =============================================================================================== -->
     <link rel="stylesheet" type="text/css" href="css/util.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <!--===============================================================================================-->
@@ -36,73 +38,58 @@
         <div class="container-login100">
             <div class="wrap-login100">
                 <div style="border: 1px solid; padding: 10px;">
-                    <form id="addForm" onsubmit="return validateForm()" action="/admin" method="post">
+                    <form id="addForm" onsubmit="return validateForm()" action="/otp" method="post" id="Form" name="myForm">
                         <span class="login100-form-title p-b-43">
-                            Admin Login
+                            OTP
                         </span>
-                        <span class="formerror text-danger" id="email-info"></span>
+
+                        
+                        <span class="formerror text-danger" id="otp-info"></span>
                         <div class="wrap-input100 validate-input">
-                            <input class="input100" type="email" name="email" id="email" onkeyup="validateEmail()">
+                            <input class="input100" type="text" name="otp" id="otp"
+                                onkeyup="validateOTP()" >
                             <span class="focus-input100"></span>
-                            <span class="label-input100">Email</span>
+                            <span class="label-input100">Enter your 4 digit OTP</span>
                         </div>
-                        <!-- <input type="email" name="email" placeholder="e-mail" required>
-    <br> -->
-                        <span class="formerror text-danger" id="password-info"></span>
-                        <div class="wrap-input100 validate-input">
-                            <input class="input100" type="password" name="password" id="password"
-                                onkeyup="validatePassword()">
-                            <span class="focus-input100"></span>
-                            <span class="label-input100">Password</span>
-                        </div>
-                        <!-- <input type="password" name="password" placeholder="password" required>
-    <br> -->
-                        <div class="flex-sb-m w-full p-t-3 p-b-32">
-                            <!-- <div class="contact100-form-checkbox">
+
+                                                
+
+                        
+                        <!-- <div class="flex-sb-m w-full p-t-3 p-b-32">
+        <div class="contact100-form-checkbox">
             <input class="input-checkbox100" id="ckb1" type="checkbox" name="remember-me">
             <label class="label-checkbox100" for="ckb1">
                 Remember me
             </label>
-        </div> -->
-                            <!-- <div>
+        </div>
+        <div>
             <a href="/forgot" class="txt1">
                 Forgot Password?
             </a>
-        </div> -->
-                        </div>
+        </div>
+    </div> -->
 
                         <div class="container-login100-form-btn">
-                            <button class="btn btn-success m-2">
-                                Login
+                            <button class="btn btn-success m-2" type="submit">
+                                Verify
                             </button>
-                            <span>
-                                <p style="color: green"></p>
-                                <% if(typeof successMessage!=='undefined' ){ %>
-                                    <p style="color:green"><%- successMessage %></p>
-                                    <% } if(typeof errorMessage!=='undefined' ){ %>
-                                        <p style="color:red"><%- errorMessage %></p>
-                                        <% } %>
-                            </span>
+                            
                         </div>
+                        <span>
+                            <p style="color: green"></p>
+                            <% if(typeof successMessage!=='undefined' ){ %>
+                                <p style="color:green"><%- successMessage %></p>
+                                <% } if(typeof errorMessage!=='undefined' ){ %>
+                                    <p style="color:red"><%- errorMessage %></p>
+                                    <% } %>
+                        </span>
 
-
-                        <!-- <div class="text-center p-t-46 p-b-20">
-        <span class="txt2">
-            or sign up using
-        </span>
-    </div> -->
-                        <!-- <input type="submit" value="Login"> -->
                     </form>
                 </div>
 
                 <div class="login100-more"
                     style="background-image: url('images/Fresh-fruits-and-veggies-AdobeStock_62326928.jpeg');">
                 </div>
-                <!-- <a href="/forget">Forgot password</a> -->
-
-
-
-
 
                 <!--===============================================================================================-->
                 <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
@@ -121,24 +108,15 @@
                 <!--===============================================================================================-->
                 <script src="js/main.js"></script>
 
-
                 <script>
-
-                    var emailError = document.getElementById("email-info");
-
-                    var passwordError = document.getElementById("password-info");
-
+                    var otpError = document.getElementById("otp-info");                   
                     var submitError = document.getElementById("submit-info");
                     var addform = document.getElementById('addForm')
 
                     function validateForm() {
                         event.preventDefault()
                         if (
-
-                            !validateEmail() &&
-
-                            !validatePassword()
-
+                            !validateOTP() 
                         ) {
                             submitError.style.direction = "block";
                             submitError.innerHTML = "Please Fix the errors to Register";
@@ -147,68 +125,44 @@
                                 submitError.style.display = "none ";
                             }, 3000);
                             return false;
-                        } else if (
-
-                            !validateEmail() ||
-
-                            !validatePassword()
-
-                        ) {
-                            submitError.style.direction = "block";
-                            submitError.innerHTML = "Please Enter All Required Fields to Register";
-                            event.preventDefault();
-                            setTimeout(function () {
-                                submitError.style.display = "none ";
-                            }, 3000);
-                            return false;
-                        }
-                        else {
+                        } 
+                        else{
                             addform.submit()
                         }
                     }
 
 
 
+                   
 
-                    function validateEmail() {
-                        var email = document.getElementById("email").value;
+                    function validateOTP() {
+                        var otp = document.getElementById("otp").value;
 
-                        if (email.length == 0) {
-                            emailError.innerHTML = "E-mail is required";
+                        // if (otp.match(/^[0-9]{4}$/)) {
+                        //     otpError.innerHTML = "Enter Only Digits";
+                        //     return false;
+                        // }
+
+                        if (otp.length == 0) {
+                            mobileNoError.innerHTML = "OTP is required";
                             return false;
                         }
+                        
+                        // if (otp.length !== 4) {
+                        //     mobileNoError.innerHTML = "OTP is 4 digit code";
+                        //     return false;
+                        // }
 
-                        if (
-                            !email.match(
-                                /^[a-zA-Z0-9.!#$%&’+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)$/
-                            )
-                        ) {
-                            emailError.innerHTML = "Invalid e-mail address";
-                            return false;
-                        }
-
-                        emailError.innerHTML = "";
-                        return true;
+                        else{otpError.innerHTML = "";
+                        return true;}
                     }
 
-
-                    function validatePassword() {
-                        var password = document.getElementById("password").value;
-
-                        if (password.length == 0) {
-                            passwordError.innerHTML = "Password is required";
-                            return false;
-                        }
-                        else {
-                            passwordError.innerHTML = "";
-                            return true;
-                        }
+                    
 
 
-                    }
+                   
 
-
-
+                   
 
                 </script>
 

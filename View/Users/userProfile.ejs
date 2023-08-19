@@ -1,224 +1,238 @@
 <%- include('../layouts/userHeader.ejs')%>
 
-    <div class="container rounded bg-white mt-5 mb-5">
-        <div class="row">
+<div class="container rounded bg-white mt-5 mb-5">
+  <div class="row">
 
-            <div class="col-md-3 border-right">
-                <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                    <img class="rounded-circle mt-5" width="150px"
-                        src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
-                    <span class="font-weight-bold"></span>
-                    <input value="<%= userData.email %>" readonly style="border: none; width:227px">
-                </div>
-            </div>
+    <div class="col-md-3 border-right">
+      <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+        <img class="rounded-circle mt-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
+        <span class="font-weight-bold"></span>
+        <input value="<%= userData.email %>" readonly style="border: none; width:227px">
+      </div>
+    </div>
 
 
-            <div class="col-md-5 border-right">
-                <div class="p-3 py-5">
-                    <form on submit="return validateForm()" action="/userProfile" method="post">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h4 class="text-right">Profile Settings</h4>
-                        </div>
+    <div class="col-md-5 " style="border: 0.5px solid black; margin: 0.5px;">
+      <div class="p-3 py-5">
 
-                        <div class="row mt-3">
-                            <span class="formerror text-danger" id="name-info></span><div class=" col-md-12"><label 
-                                for="address2">Name</label><input type="text" name="name" class="form-control"
-                                    id="name" placeholder="enter name" onkeyup="validateName()"
-                                    value="<%= userData.address[0].name %>">
-                        </div>
-                        <span class="formerror text-danger" id="phonenumber-info"></span>
-                        <div class="col-md-12"><label for="address2">Phonenumber</label><input type="text"
-                                name="phonenumber" class="form-control" id="phonenumber" placeholder="enter phonenumber"
-                                onkeyup="validatePhonenumber()" value="<%= userData.address[0].phonenumber %>"></div>
-                        <span class="formerror text-danger" id="address1-info"></span>
-                        <div class="col-md-12"><label for="address1">Address Line 1</label><input type="text"
-                                name="address1" class="form-control" id="address" placeholder="enter address line 1"
-                                onkeyup="validateAddress()" value="<%= userData.address[0].address1 %>"></div>
-                        <span class="formerror text-danger" id="address2-info"></span>
-                        <div class="col-md-12"><label for="address2">Address Line 2</label><input type="text"
-                                name="address2" class="form-control" id="address-2" placeholder="enter address line 2"
-                                onkeyup="validateAddress2()" value="<%= userData.address[0].address2 %>"></div>
+        <form id="addForm" onsubmit="return validateForm()" action="/userProfile" method="post">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="text-right">Profile Settings</h4>
+          </div>
 
-                </div>
+          <span class="formerror text-danger" id="name-info"></span>
+          <div class="col-md-12"><label for="address2">Name</label><input type="text" name="name" class="form-control" id="name" placeholder="enter name" onkeyup="validateName()" value="<%= userData.name %>"></div>
+          <span class="formerror text-danger" id="phonenumber-info"></span>
+          <div class="col-md-12"><label for="address2">Phonenumber</label><input type="text" name="phonenumber" class="form-control" id="phonenumber" placeholder="enter phonenumber" onkeyup="validatePhonenumber()" value="<%= userData.phonenumber %>"></div>
+          <span class="formerror text-danger" id="address1-info"></span>
+          <div class="col-md-12"><label for="address1">Address Line 1</label><input type="text" name="address1" class="form-control" id="address" placeholder="enter address line 1" onkeyup="validateAddress()" value="<%= userData.address[0].address1 %>"></div>
+          <span class="formerror text-danger" id="address2-info"></span>
+          <div class="col-md-12"><label for="address2">Address Line 2</label><input type="text" name="address2" class="form-control" id="address-2" placeholder="enter address line 2" onkeyup="validateAddress2()" value="<%= userData.address[0].address2 %>"></div>
 
-                <div class="row mt-3">
+      </div>
 
-                    <div class="col-md-6">
-                        <span class="formerror text-danger" id="state-info"></span><label
-                            for="state">State/Region</label>
-                        <select name="state" class="form-control" id="state" onkeyup="validateState()">
+      <div class="row mt-3">
 
-                            <option value="Kerala">Kerala</option>
-                            <option value="TamilNadu">TamilNadu</option>
-                            <option value="Karnataka">Karnataka</option>
-                            <option value="Telungana">Telungana</option>
-                            <option value="AndraPradesh">AndraPradesh</option>
-                            <option value="Jammu&Kashmir">Jammu & Kashmir</option>
-                            <option value="Uttarakand">Uttarakand</option>
-                            <option value="Orissa">Orrisa</option>
-                            <option value="Jharkhand">Jharkhand</option>
-                            <option value="Rajastan">Rajastan</option>
-                            <option value="Punjab">Punjab</option>
-                            <option value="Gujarat">Gujarat</option>
-                            <option value="Mizoram">Mizoram</option>
-                            <option value="Manipur">Manipur</option>
+        <div class="col-md-6">
+          <span class="formerror text-danger" id="state-info"></span><label for="state">State/Region</label>
+          <select name="state" class="form-control" id="state" onkeyup="validateState()">
 
-                        </select>
-                    </div>
+            <option value="Kerala">Kerala</option>
+            <option value="TamilNadu">TamilNadu</option>
+            <option value="Karnataka">Karnataka</option>
+            <option value="Telungana">Telungana</option>
+            <option value="AndraPradesh">AndraPradesh</option>
+            <option value="Jammu&Kashmir">Jammu & Kashmir</option>
+            <option value="Uttarakand">Uttarakand</option>
+            <option value="Orissa">Orrisa</option>
+            <option value="Jharkhand">Jharkhand</option>
+            <option value="Rajastan">Rajastan</option>
+            <option value="Punjab">Punjab</option>
+            <option value="Gujarat">Gujarat</option>
+            <option value="Mizoram">Mizoram</option>
+            <option value="Manipur">Manipur</option>
 
-                    <div class="col-md-6"><label for="country">Country</label><input type="text" class="form-control"
-                            placeholder="country" value="India" readonly></div>
-                    <span class="formerror text-danger" id="pincode-info"></span>
-                    <div class="col-md-8"><label for="pincode">PINCODE</label><input type="text" name="pincode"
-                            class="form-control" id="pincode" onkeyup="validatePincode()"
-                            value="<%= userData.address[0].address2 %>" placeholder="Pincode"></div>
-                </div>
-                <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="submit">Edit
-                        Profile</a></button></div>
-                </form>
-            </div>
+          </select>
         </div>
 
-
-
+        <div class="col-md-6"><label for="country">Country</label><input type="text" class="form-control" placeholder="country" value="India" readonly></div>
+        <span class="formerror text-danger" id="pincode-info"></span>
+        <div class="col-md-8"><label for="pincode">PINCODE</label><input type="text" name="pincode" class="form-control" id="pincode" onkeyup="validatePincode()" value="<%= userData.address[0].pincode %>" placeholder="Pincode"></div>
+      </div>
+      <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="submit">Edit
+          Profile</button></div>
+      </form>
+     
     </div>
+  </div>
+
+
+
+
+</div>
+<br>
+<br>
+<br>
+<section class="ftco-section ftco-no-pt ftco-no-pb py-5 bg-light" style="border: 2px solid black; margin-top: -2px;">
+    <div class="container py-4">
+      <div class="row d-flex justify-content-center py-5" >
+        <div class="col-md-6">
+            <h2 style="font-size: 22px;" class="mb-0">Subcribe to our Newsletter</h2>
+            <span>Get e-mail updates about our latest shops and special offers</span>
+        </div>
+        <div class="col-md-6 d-flex align-items-center">
+          <form action="#" class="subscribe-form">
+            <div class="form-group d-flex">
+              <input type="text" class="form-control" placeholder="Enter email address">
+              <input type="submit" value="Subscribe" class="submit px-3">
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-    </div>
-    </div>
+  
 
-    <%- include('../layouts/userFooter.ejs')%>
-        <script>
-            var nameError = document.getElementById("name-info").value.trim();
-            var phonenumber = document.getElementById("phonenumber-info").value.trim();
-            var addressError = document.getElementById("address1-info").value.trim();
-            var address2Error = document.getElementById("address2-info").value.trim();
-            var pincodeError = document.getElementById("pincode-info").value.trim();
-            var stateError = document.getElementById("state-info").value.trim();
+</section>
 
-
-            function validateName() {
-                var name = document.getElementById("name").value;
-
-                if (name.length == 0) {
-                    nameError.innerHTML = "Username is required";
-                    return false;
-                }
-
-                if (!name.match(/(^[a-zA-Z][a-zA-Z\s]{0,20}[a-zA-Z]$)/)) {
-                    nameError.innerHTML = "Invalid Username";
-                    return false;
-                } else {
-                    nameError.innerHTML = "";
-                    return true;
-                }
-            }
-            function validatePhonenumber() {
-                var phone = document.getElementById("phonenumber").value;
-
-                if (phone.match(/^[0-9]{3}-[0-9]{4}-[0-9]{4}$/)) {
-                    mobileNoError.innerHTML = "Enter Only Digits";
-                    return false;
-                }
-
-                if (phone.length == 0) {
-                    mobileNoError.innerHTML = "Mobile Number required";
-                    return false;
-                }
-                if (phone.charAt(0) === '0') {
-                    mobileNoError.innerHTML = "First digit cannot be 0";
-                    return false;
-                }
-                if (phone.length !== 10) {
-                    mobileNoError.innerHTML = "Mobile Number should be ten digits";
-                    return false;
-                }
-
-                mobileNoError.innerHTML = "";
-                return true;
-            }
-
-            function validateAddress() {
-                var address = document.getElementById("address").value;
-                if (address.length == 0) {
-                    addressError.innerHTML = "Address is required";
-                    return false;
-                }
-                if (!address.replace(/\s/g, "").length) {
-                    addressError.innerHTML = "Address cannot be just spaces";
-                    return false;
-                }
-                addressError.innerHTML = "";
-                return true;
-            }
-
-            function validateAddress2() {
-                var address2 = document.getElementById("address-2").value;
-                if (address2.length == 0) {
-                    address2Error.innerHTML = "Address is required";
-                    return false;
-                }
-            }
-
-            function validateState() {
-                var selectedState = document.getElementById("state").value;
-                var errorElement = document.getElementById("state-info");
-
-                if (selectedState === "state1") {
-                    errorElement.innerHTML = "Please select a state";
-                    return false;
-                } else {
-                    errorElement.innerHTML = "";
-                    return true;
-                }
-            }
+<%- include('../layouts/userFooter.ejs')%>
+<script>
+  var nameError = document.getElementById("name-info")
+  var mobileNoError = document.getElementById("phonenumber-info")
+  var addressError = document.getElementById("address1-info")
+  var address2Error = document.getElementById("address2-info")
+  var pincodeError = document.getElementById("pincode-info")
+  var stateError = document.getElementById("state-info")
+  var submitError = document.getElementById("submit-error")
+  var addform = document.getElementById('addForm')
 
 
-            function validatePincode() {
-                var pincode = document.getElementById("pincode").value;
-                if (!pincode.match(/^[0-9]{6}$/)) {
-                    pincodeError.innerHTML = "Please enter a valid 6-digit PINCODE";
-                    return false;
-                }
-                if (pincode.match(phone.match(/^[0-9]{3}-[0-9]{4}-[0-9]{4}$/))) {
-                    pincodeError.innerHTML = "Please enter valid PINCODE"
-                    return false
-                }
 
-                pincodeError.innerHTML = ""
-                return true
-            }
+  function validateForm() {
+    event.preventDefault();
+    if (
+      !validateName() &&
+      !validatePhonenumber() &&
+      !validateAddress() &&
+      !validateAddress2() &&
+      !validateState() &&
+      !validatePincode()
+    ) {
+      submitError.style.direction = "block";
+      submitError.innerHTML = "Please Fix the errors to Register";
 
-            function validateForm() {
-                if (
-                    !validateName() &&
-                    !validatePhonenumber() &&
-                    !validateAddress() &&
-                    !validateAddress2()&&
-                    !validateState() &&
-                    !validatePincode()
-                ) {
-                    submitError.style.direction = "block";
-                    submitError.innerHTML = "Please Fix the errors to Register";
-                    event.preventDefault();
-                    setTimeout(function () {
-                        submitError.style.display = "none ";
-                    }, 3000);
-                    return false;
-                } else if (
-                    !validateName() ||
-                    !validatePhonenumber() ||
-                    !validateAddress() ||
-                    !validateAddress2()||
-                    !validateState() ||
-                    !validatePincode()
-                ) {
-                    submitError.style.direction = "block";
-                    submitError.innerHTML = "Please Enter All Required Fields to Register";
-                    event.preventDefault();
-                    setTimeout(function () {
-                        submitError.style.display = "none ";
-                    }, 3000);
-                    return false;
-                }
-            }
-        </script>
+      setTimeout(function() {
+        submitError.style.display = "none ";
+      }, 3000);
+      return false;
+    } else if (
+      !validateName() ||
+      !validatePhonenumber() ||
+      !validateAddress() ||
+      !validateAddress2() ||
+      !validateState() ||
+      !validatePincode()
+    ) {
+      submitError.style.direction = "block";
+      submitError.innerHTML = "Please Enter All Required Fields to Register";
+      event.preventDefault();
+      setTimeout(function() {
+        submitError.style.display = "none ";
+      }, 3000);
+      return false;
+    } else {
+      addform.submit()
+    }
+  }
+
+  function validateName() {
+    var name = document.getElementById("name").value.trim();
+
+    if (name.length == 0) {
+      nameError.innerHTML = "Username is required";
+      return false;
+    }
+
+    if (!name.match(/(^[a-zA-Z][a-zA-Z\s]{0,20}[a-zA-Z]$)/)) {
+      nameError.innerHTML = "Invalid Username";
+      return false;
+    } else {
+      nameError.innerHTML = "";
+      return true;
+    }
+  }
+
+  function validatePhonenumber() {
+    var phone = document.getElementById("phonenumber").value.trim()
+
+    if (phone.match(/^[0-9]{3}-[0-9]{4}-[0-9]{4}$/)) {
+      mobileNoError.innerHTML = "Enter Only Digits";
+      return false;
+    }
+
+    if (phone.length == 0) {
+      mobileNoError.innerHTML = "Mobile Number required";
+      return false;
+    }
+    if (phone.charAt(0) === '0') {
+      mobileNoError.innerHTML = "First digit cannot be 0";
+      return false;
+    }
+    if (phone.length !== 10) {
+      mobileNoError.innerHTML = "Mobile Number should be ten digits";
+      return false;
+    }
+
+    mobileNoError.innerHTML = "";
+    return true;
+  }
+
+  function validateAddress() {
+    var address = document.getElementById("address").value.trim()
+    if (address.length == 0) {
+      addressError.innerHTML = "Address is required";
+      return false;
+    }
+    if (!address.replace(/\s/g, "").length) {
+      addressError.innerHTML = "Address cannot be just spaces";
+      return false;
+    }
+    addressError.innerHTML = "";
+    return true;
+  }
+
+  function validateAddress2() {
+    var address2 = document.getElementById("address-2").value.trim()
+    if (address2.length == 0) {
+      address2Error.innerHTML = "Address is required";
+      return false;
+    }
+    address2Error.innerHTML = "";
+    return true;
+  }
+
+  function validateState() {
+    var selectedState = document.getElementById("state").value.trim()
+    var errorElement = document.getElementById("state-info");
+
+    if (selectedState === "state1") {
+      errorElement.innerHTML = "Please select a state";
+      return false;
+    } else {
+      errorElement.innerHTML = "";
+      return true;
+    }
+  }
+
+
+  function validatePincode() {
+    var pincode = document.getElementById("pincode").value.trim()
+    if (!pincode.match(/^[0-9]{6}$/)) {
+      pincodeError.innerHTML = "Please enter a valid 6-digit PINCODE";
+      return false;
+    }
+
+
+    pincodeError.innerHTML = ""
+    return true
+  }
+</script>

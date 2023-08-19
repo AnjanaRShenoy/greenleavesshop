@@ -1,33 +1,37 @@
 <%- include('../layouts/adminHeader.ejs')%>
 
   <div class="col-md-6" style="padding-left: 290px;">
+    
     <br><br>
     <div class="add-product">
       <h2>Add Product</h2>
 
       <br>
       <br>
-      <form onsubmit="return validateForm()" action="/admin/addProducts" method="post" enctype="multipart/form-data">
+      <form id="addForm" onsubmit="return validateForm()" action="/admin/addProducts" method="post" enctype="multipart/form-data">
         <div class="form-group">
-          <span class="formerror text-danger" id="name-info"></span>
+          
           <label for="product-name">Product Name</label>
           <input type="text" style="border-color:black" name="productname" class="form-control" id="product-name"
             onkeyup="validateName()">
+            <span class="formerror text-danger" id="name-info"></span>
         </div>
         <div class="form-group">
-          <span class="formerror text-danger" id="description-info"></span>
+          
           <label for="product-description">Description</label>
           <textarea class="form-control" style="border-color:black" name="description" id="product-description"
             onkeyup="validateDescription()" rows="3"></textarea>
+            <span class="formerror text-danger" id="description-info"></span>
         </div>
         <div class="m-4">
-          <span class="formerror text-danger" id="image-info"></span>
+          
           <label style="color: #fff; font-weight: 300;">Upload Images</label><br>
           <input type="file" style="border-color:black" class="form-control-file custom-file-input" id="preview-image"
             name="productImage" onchange="previewImage(event)" style="opacity:100" multiple onkeyup="validateImage()">
-        </div>
+            <span class="formerror text-danger" id="image-info"></span>
+          </div>
         <div class="form-group">
-          <span class="formerror text-danger" id="category-info"></span>
+          
           <label for="product-category">Category</label>
           <select name="category" class="form-control" style="border-color:black" id="product-category"
             onkeyup="validateCategory()">
@@ -38,22 +42,35 @@
               </option>
               <% } } %>
           </select>
+          <span class="formerror text-danger" id="category-info"></span>
         </div>
 
         <div class="form-group">
-          <span class="formerror text-danger" id="price-info"></span>
+          
           <label for="product-price">Price</label>
           <input type="number" name="price" class="form-control" style="border-color:black " id="product-price"
             onkeyup="validatePrice()">
+            <span class="formerror text-danger" id="price-info"></span>
         </div>
         <div class="form-group">
-          <span class="formerror text-danger" id="kg-info"></span>
+          
           <label for="product-kg">Kg</label>
           <input type="number" name="kg" class="form-control" style="border-color:black" id="product-kg"
             onkeyup="validateKg()">
+            <span class="formerror text-danger" id="kg-info"></span>
         </div>
 
         <button type="submit" class="btn btn-primary">Add Product</button>
+
+        <span>
+          <p style="color: green"></p>
+          <% if(typeof successMessage!=='undefined' ){ %>
+            <p style="color:green"><%- successMessage %></p>
+            <% } if(typeof errorMessage!=='undefined' ){ %>
+              <p style="color:red"><%- errorMessage %></p>
+              <% } %>
+        </span>
+        
       </form>
     </div>
   </div>
@@ -84,7 +101,46 @@
       var priceError = document.getElementById("price-info");
       var kgError = document.getElementById("kg-info");
       var submitError = document.getElementById("submit-error")
-
+      var addform=document.getElementById('addForm')
+    
+      function validateForm() {
+        event.preventDefault();
+        if (
+          !validateName() &&
+          !validateDescription() &&
+          !validateImage() &&
+          !validateCategory() &&
+          !validatePrice() &&
+          !validateKg()
+        ) {
+          submitError.style.display = "block";
+          submitError.innerHTML = "Please Fix the errors to Register";
+          event.preventDefault();
+          setTimeout(function () {
+            submitError.style.display = "none ";
+          }, 3000);
+          return false;
+        } else if (
+          !validateName() ||
+          !validateDescription() ||
+          !validateImage() ||
+          !validateCategory() ||
+          !validatePrice() ||
+          !validateKg()
+        ) {
+          submitError.style.display = "block";
+          submitError.innerHTML = "Please fix the errors to Register";
+          event.preventDefault();
+          setTimeout(function () {
+            submitError.style.display = "none"
+          }, 3000);
+          return false;
+        } else {
+          
+          // Return true if all validations pass
+          addform.submit()
+        }
+      }
       function validateName() {
         var name = document.getElementById("product-name").value.trim();
 
@@ -112,9 +168,11 @@
         if (!description.replace(/\s/g, "").length) {
           descriptionError.innerHTML = "Description cannot be just spaces";
           return false;
+
         } else if (description.length < 50) {
           descriptionError.innerHTML = "Product description should be at least 50 characters.";
           return false;
+
         } else {
           descriptionError.innerHTML = "";
           return true;
@@ -153,6 +211,7 @@
           priceError.innerHTML = "Product price is required";
           return false;
         }
+
         if (isNaN(price) || parseFloat(price) <= 0) {
           priceError.innerHTML = "Please enter a valid price"
           return false;
@@ -171,48 +230,16 @@
           kgError.innerHTML = "Product quantity is required";
           return false;
         }
+
         if (kg < 0) {
           kgError.innerHTML = "Please enter a valid quantity"
+          return false
         }
+
         else {
           kgError.innerHTML = "";
           return true;
         }
       }
 
-      function validateForm() {
-        if (
-          !validateName() &&
-          !validateDescription() &&
-          !validateImage() &&
-          !validateCategory() &&
-          !validatePrice() &&
-          !validateKg()
-        ) {
-          submitError.style.direction = "block";
-          submitError.innerHTML = "Please Fix the errors to Register";
-          event.preventDefault();
-          setTimeout(function () {
-            submitError.style.display = "none ";
-          }, 3000);
-          return false;
-        } else if (
-          !validateName() ||
-          !validateDescription() ||
-          !validateImage() ||
-          !validateCategory() ||
-          !validatePrice() ||
-          !validateKg()
-        ) {
-          submitError.style.display = "block";
-          submitError.innerHTML = "Please Fix the errors to Register";
-          event.preventDefault();
-          setTimeout(function () {
-            submitError.style.display = "none";
-          }, 3000);
-          return false;
-        } else {
-          return true; // Return true if all validations pass
-        }
-      }
     </script>

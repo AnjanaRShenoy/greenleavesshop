@@ -2,7 +2,7 @@ const express=require("express")
 const user_route= express()
 const session=require("express-session");
 
-const config=require('../Configuration/userConfig')
+const config=require('../Configuration/connections')
 
 // user_route.use(session({
 //     resave: false, // Set to false to avoid session being saved on every request
@@ -19,9 +19,9 @@ user_route.use(session({
   saveUninitialized: true
 }));
 const auth=require('../middleware/auth')
+const { preventCache } = require('../middleware/preventCache')
 
 
-user_route.set('view engine',"ejs")
 user_route.set('views','./View/Users')
 
 // const bodyParser=require('body-parser')
@@ -46,69 +46,81 @@ const path = require('path')
 
 const userController=require("../Controller/userController")
 const cartController=require("../Controller/cartController")
+const paymentController=require("../Controller/paymentController")
+const couponController=require("../Controller/couponController")
 
-user_route.get('/',auth.isLogout,userController.guestUser)
+user_route.get('/',preventCache,auth.isLogout,userController.guestUser)
 
-user_route.get('/signup',auth.isLogout,userController.loadsignup)
+user_route.get('/signup',preventCache,auth.isLogout,userController.loadsignup)
 
-user_route.post('/signup',upload.single('image'),userController.insertUser)
+user_route.post('/signup',userController.insertUser)
 
-user_route.get('/verify',userController.verifymail)
+user_route.get('/otp',preventCache,auth.isLogout,userController.otpPage)
 
-user_route.get('/login',auth.isLogout,userController.login)
+user_route.post('/otp',userController.checkOtp)
+
+user_route.get('/login',preventCache,auth.isLogout,userController.login)
 
 user_route.post('/login',userController.verifylogin)
 
-user_route.get('/home',auth.isLogin,userController.loadHome)
+user_route.get('/home',preventCache,auth.isLogin,userController.loadHome)
 
-user_route.get("/contact",auth.isLogin,userController.contact)
+user_route.get("/contact",preventCache,auth.isLogin,userController.contact)
 
-user_route.get("/about",auth.isLogin,userController.about)
+user_route.get("/about",preventCache,auth.isLogin,userController.about)
 
-user_route.get('/logout',auth.isLogin,userController.userlogout)
+user_route.get('/logout',preventCache,auth.isLogin,userController.userlogout)
 
-user_route.get('/logout',auth.isLogin,userController.userlogout)
+user_route.get('/logout',preventCache,auth.isLogin,userController.userlogout)
 
-user_route.get('/forgot',auth.isLogout,userController.forgetload)
+user_route.get('/forgot',preventCache,auth.isLogout,userController.forgetload)
 
 user_route.post('/forgot',userController.forgetverify)
 
-user_route.get('/forgot-password',auth.isLogout,userController.forgetpasswordload)
+user_route.get('/forgot-password',preventCache,auth.isLogout,userController.forgetpasswordload)
 
 user_route.post('/forgot-password',userController.resetpassword)
 
-user_route.get('/shop',auth.isLogin,userController.shop)
-user_route.get('/shop/:category/p/:page',auth.isLogin,userController.shop)
+user_route.get('/shop',preventCache,auth.isLogin,userController.shop)
+user_route.get('/shop/:category/p/:page',preventCache,auth.isLogin,userController.shop)
 
-user_route.get('/userProfile',auth.isLogin,userController.userProfile)
+user_route.get('/userProfile',preventCache,auth.isLogin,userController.userProfile)
 
 user_route.post('/userProfile',userController.profileAddressAdd)
 
-user_route.get('/singleproduct',auth.isLogin,userController.singleproduct)
+user_route.get('/singleproduct',preventCache,auth.isLogin,userController.singleproduct)
 
 user_route.post("/addtocart",userController.addToCart)
 
-user_route.get("/cart",auth.isLogin,cartController.cart)
+user_route.get("/cart",preventCache,auth.isLogin,cartController.cart)
 
-user_route.get("/deleteitem",auth.isLogin,cartController.deleteItem)
+user_route.get("/deleteitem",preventCache,auth.isLogin,cartController.deleteItem)
 
 user_route.post("/updatecart",cartController.updateCart)
 
-user_route.get('/checkout',auth.isLogin,cartController.checkout)
+user_route.get('/checkout/:id?',preventCache,auth.isLogin,cartController.checkout)
 
-user_route.get('/addAddress',auth.isLogin,userController.addAddress)
+user_route.get('/addAddress',preventCache,auth.isLogin,userController.addAddress)
 
 user_route.post('/addAddress',userController.addnewAddress)
 
 user_route.post('/checkout', cartController.checkOrder)
 
-user_route.get('/orderDetails/:id',auth.isLogin,cartController.orderDetails)
+user_route.get('/orderDetails/:id',preventCache,auth.isLogin,cartController.orderDetails)
 
-user_route.get('/orderList',auth.isLogin,userController.orderList)
-user_route.get('/orderList/:orders/p/:page',auth.isLogin,userController.orderList)
+user_route.get('/orderList',preventCache,auth.isLogin,userController.orderList)
+user_route.get('/orderList/:orders/p/:page',preventCache,auth.isLogin,userController.orderList)
 
-user_route.get('/cancel',auth.isLogin,userController.cancelOrder)
+user_route.get('/cancel',preventCache,auth.isLogin,userController.cancelOrder)
 
-user_route.get('/orderFullDetails',auth.isLogin,userController.orderFullDetails)
+user_route.get('/orderFullDetails',preventCache,auth.isLogin,userController.orderFullDetails)     
+
+// user_route.post('/createOrder',userController.createOrder)
+
+user_route.get('/couponLoad',preventCache,auth.isLogin,couponController.couponLoad)
+
+user_route.post('/createOrder', paymentController.createOrder)
+
+user_route.post('/verifyPayment', paymentController.verifyPayment)
 
 module.exports=user_route
