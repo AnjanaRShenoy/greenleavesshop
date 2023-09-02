@@ -1,0 +1,178 @@
+<%- include('../layouts/userHeader.ejs')%>
+<div class="hero-wrap hero-bread" style="background-image: url('/images/bg_1.jpg');">
+  <div class="container">
+
+    <div class="row no-gutters slider-text align-items-center justify-content-center">
+      <div class="col-md-9 ftco-animate text-center">
+        <p class="breadcrumbs"><span class="mr-2"></span> </p>
+        <h1 class="mb-0 bread">Products</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="ftco-section">
+  <div class="container">
+
+    <div class="row justify-content-center">
+
+      <div class="col-md-10 mb-5 text-center">
+        <div class="d-flex align-items-end justify-content-end gap-1">
+          <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Sort
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item sort-btn" href="#" data-sort="asc">Low to high
+            </a>
+            <a class="dropdown-item sort-btn" href="#" data-sort="desc">High to low
+            </a>
+
+          </div>
+        </div>
+
+        <script defer>
+          document.addEventListener('DOMContentLoaded', () => {
+            const sortBtnEls = Array.from(document.querySelectorAll('.sort-btn'));
+            sortBtnEls.forEach((sortBtnEl) => {
+              sortBtnEl.addEventListener('click', (e) => {
+                e.preventDefault();
+                const [baseUrl, query] = window.location.href.split('?');
+                const queryParams = new URLSearchParams(query);
+                const selectedSort = e.currentTarget.dataset.sort;
+                queryParams.set('page', 1);
+                queryParams.set('sort', selectedSort);
+                const queryString = queryParams.toString();
+                window.location.href = `${baseUrl}?${queryString}`;
+              })
+            })
+          })
+        </script>
+
+        <ul class="product-category">
+          <li>
+            <a id="category-selection">Category</a>
+            <ul class="sub-menu">
+              <li><a href="javascript:;" data-category="All" class="category-btn <%= 'All' === currentCategory ? ' active ' : '' %>">All</a></li>
+              <% for (let i=0; i < categories.length; i++) { if (!categories[i].categoryBlock) { %>
+              <li><a href="javascript:;" data-category="<%= categories[i].categoryName %>" class="category-btn <%= categories[i].categoryName === currentCategory ? ' active ' : '' %>">
+                  <%= categories[i].categoryName %>
+                </a></li>
+              <% } } %>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <script defer>
+        document.addEventListener('DOMContentLoaded', () => {
+          const categoryBtnEls = Array.from(document.querySelectorAll('.category-btn'));
+          categoryBtnEls.forEach((categoryBtnEl) => {
+            categoryBtnEl.addEventListener('click', (e) => {
+              e.preventDefault();
+              const [baseUrl, query] = window.location.href.split('?');
+              const queryParams = new URLSearchParams(query);
+              const selectedCategory = e.currentTarget.dataset.category;
+              queryParams.set('page', 1);
+              queryParams.set('category', selectedCategory);
+              const queryString = queryParams.toString();
+              window.location.href = `${baseUrl}?${queryString}`;
+            })
+          })
+        })
+      </script>
+
+    </div>
+    <div class="row">
+      <% for (let i=0; i < productsData.length; i++) { if (!productsData[i].productBlock) { %>
+      <div class="col-md-6 col-lg-3 ftco-animate">
+        <div class="product">
+          <a href="/singleproduct?id=<%= productsData[i]._id %>" class="img-prod">
+            <img class="img-fluid" src="/images/<%= productsData[i].productImage[0] %>" alt="" style="width: 100%; height: 200px;">
+            <div class="overlay"></div>
+          </a>
+          <div class="text py-3 pb-4 px-3 text-center">
+            <h3><a href="/singleproduct?id=<%= productsData[i]._id %>">
+                <%= productsData[i].productName %>
+              </a></h3>
+            <div class="d-flex">
+              <div class="pricing">
+                <p class="price"><span>₹</span>
+                  <%= productsData[i].price %>
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <% } } %>
+    </div>
+
+
+
+    <div class="row mt-5">
+      <div class="col text-center">
+        <div class="block-27">
+
+          <ul>
+
+            <% for(let i=1; i<=totalPages;i++) { %>
+            <% if(i===currentPage){ %>
+            <li class="active"><a class="page-btn" href="javascript:;" data-page="<%= i %>">
+                <%= i %>
+              </a></li>
+
+
+            <% } else { %>
+            <li><a class="page-btn" href="javascript:;" data-page="<%= i %>">
+                <%= i %>
+              </a></li>
+            <% } %>
+            <% } %>
+
+
+
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script defer>
+  document.addEventListener('DOMContentLoaded', () => {
+    const pageBtnEls = Array.from(document.querySelectorAll('.page-btn'));
+    pageBtnEls.forEach((pageBtnEl) => {
+      pageBtnEl.addEventListener('click', (e) => {
+        e.preventDefault();
+        const [baseUrl, query] = window.location.href.split('?');
+        const queryParams = new URLSearchParams(query);
+        const selectedPage = e.currentTarget.dataset.page;
+        queryParams.set('page', selectedPage);
+        const queryString = queryParams.toString();
+        window.location.href = `${baseUrl}?${queryString}`;
+      })
+    })
+  })
+</script>
+
+<section class="ftco-section ftco-no-pt ftco-no-pb py-5 bg-light" style="border: 1px solid black; margin-top: -2px;">
+  <div class="container py-4">
+    <div class="row d-flex justify-content-center py-5">
+      <div class="col-md-6">
+        <h2 style="font-size: 22px;" class="mb-0">Subcribe to our Newsletter</h2>
+        <span>Get e-mail updates about our latest shops and special offers</span>
+      </div>
+      <div class="col-md-6 d-flex align-items-center">
+        <form action="#" class="subscribe-form">
+          <div class="form-group d-flex">
+            <input type="text" class="form-control" placeholder="Enter email address">
+            <input type="submit" value="Subscribe" class="submit px-3">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+<%- include('../layouts/userFooter.ejs')%>

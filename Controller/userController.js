@@ -435,8 +435,8 @@ const shopWithQuery = async (req, res, next) => {
   try {
     // const CATEGORY = ['All', 'Fruits', 'Vegetables', 'Dried Fruits'];
     // const SORT = ['asc', 'desc'];
-    const page = req.query.page ?? 1;
-    const limit = req.query.limit ?? 8;
+    const page = Number(req.query.page ?? 1);
+    const limit = Number(req.query.limit ?? 8);
     const sort = req.query.sort ?? "asc";
     const category = req.query.category ?? "All";
 
@@ -471,9 +471,9 @@ const shopWithQuery = async (req, res, next) => {
     const totalCount = await Product.countDocuments(filter);
     const totalPages = Math.ceil(totalCount / limit);
 
-    console.log(productsData);
-
-    res.render("shop", {
+    res.render("shopWithQuery", {
+      currentUrl: req.url,
+      currentCategory: category,
       productsData: productsData,
       categories: unblockedCategories,
       currentPage: page,
