@@ -3,7 +3,13 @@ const Category = require("../Model/categoryModel");
 const Product = require("../Model/productModel");
 const Cart = require("../Model/cartModel");
 const Order = require("../Model/orderModel");
+const Banner = require("../Model/bannerModel");
 
+const dashboardHelper = require("../helper/dashboardHelper");
+
+const { Readable } = require("stream");
+const fs = require("fs");
+const easyinvoice = require("easyinvoice");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const config = require("../Configuration/connections");
@@ -21,7 +27,7 @@ const guestUser = async (req, res, next) => {
 
     res.render("guestUserPage", { productsData: productsData });
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -31,26 +37,21 @@ const securepassword = async (password, next) => {
     const passwordhash = await bcrypt.hash(password, 10);
     return passwordhash;
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
-
-
-;
 
 // to load signup page
 const loadsignup = async (req, res, next) => {
   try {
     res.render("signup");
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
 // to add users
 const insertUser = async (req, res, next) => {
-  
-  
   try {
     const existingUserEmail = await User.findOne({ email: req.body.email });
     if (existingUserEmail) {
@@ -67,13 +68,12 @@ const insertUser = async (req, res, next) => {
 
     const password = req.body.password;
     const repassword = req.body.repassword;
-    req.session.signupUser = req.body
+    req.session.signupUser = req.body;
 
     if (req.body.password === req.body.repassword) {
       const spassword = await securepassword(req.body.password);
       req.session.otp = Math.floor(1000 + Math.random() * 9000);
 
-      
       sendverifyMail(req.body.name, req.body.email, req.session.otp);
       res.render("otpPage", {
         successMessage:
@@ -83,23 +83,22 @@ const insertUser = async (req, res, next) => {
       res.render("signup", { errorMessage: "Your password doesnt match" });
     }
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
 // to render OTP page
 const otpPage = async (req, res, next) => {
   try {
-    res.render('otpPage')
+    res.render("otpPage");
   } catch (err) {
-    next(err)
+    next(err);
   }
-}
+};
 
 // to send mail
 const sendverifyMail = async (name, email, otp) => {
   try {
-    
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       post: 587,
@@ -131,27 +130,22 @@ const sendverifyMail = async (name, email, otp) => {
   }
 };
 
-
-
 // to check otp and login
 const checkOtp = async (req, res, next) => {
-  
   try {
-    let spassword = await securepassword(req.session.signupUser.password)
+    let spassword = await securepassword(req.session.signupUser.password);
     const otpcheck = req.body.otp;
-    if(req.session.otp == otpcheck){
+    if (req.session.otp == otpcheck) {
       let newUser = new User({
-        name:req.session.signupUser.name,
-        email:req.session.signupUser.email,
-        phonenumber:req.session.signupUser.phonenumber,
-        password :spassword
-      })
+        name: req.session.signupUser.name,
+        email: req.session.signupUser.email,
+        phonenumber: req.session.signupUser.phonenumber,
+        password: spassword,
+      });
 
-      newUser.save().then((status)=>{
-        
-        res.redirect('/login')
-      })
-      
+      newUser.save().then((status) => {
+        res.redirect("/login");
+      });
     }
   } catch (error) {
     console.log(error.message);
@@ -193,17 +187,16 @@ const sendresetpasswordmail = async (name, email, token, next) => {
       }
     });
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
-
 
 // login user
 const login = async (req, res, next) => {
   try {
     res.render("login");
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -251,7 +244,7 @@ const verifylogin = async (req, res, next) => {
       res.render("login", { errorMessage: "Please signup" });
     }
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -259,10 +252,11 @@ const verifylogin = async (req, res, next) => {
 const loadHome = async (req, res, next) => {
   try {
     const productsData = await Product.find({ productBlock: false });
+    const banner = await Banner.find({ isActive: true });
 
-    res.render("home", { productsData: productsData });
+    res.render("home", { productsData: productsData, banner });
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -271,7 +265,7 @@ const contact = async (req, res, next) => {
   try {
     res.render("contact");
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -280,7 +274,7 @@ const about = async (req, res, next) => {
   try {
     res.render("about");
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -290,7 +284,7 @@ const userlogout = async (req, res, next) => {
     delete req.session.user_id;
     res.redirect("/");
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -299,7 +293,7 @@ const forgetload = async (req, res, next) => {
   try {
     res.render("forgotpassword");
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -315,7 +309,9 @@ const forgetverify = async (req, res, next) => {
       if (userData.is_verified === 0) {
         // const updatedData= await User.updateOne({email:email},{$set:{token:randomString}})
         // sendresetpasswordmail(userData.name,userData.email,randomString)
-        res.render("forgotpassword", { successMessage: "please verify your mail" });
+        res.render("forgotpassword", {
+          successMessage: "please verify your mail",
+        });
       } else {
         const randomString = randormString.generate();
         const updatedData = await User.updateOne(
@@ -333,7 +329,7 @@ const forgetverify = async (req, res, next) => {
       });
     }
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -350,7 +346,7 @@ const forgetpasswordload = async (req, res, next) => {
       res.render("404", { errorMessage: "Page not found" });
     }
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -358,10 +354,9 @@ const forgetpasswordload = async (req, res, next) => {
 const resetpassword = async (req, res, next) => {
   try {
     const newPassword = req.body.newpassword;
-    
+
     const rePassword = req.body.repassword;
-    
-    
+
     const email = req.session.email;
 
     if (newPassword === rePassword) {
@@ -385,7 +380,7 @@ const resetpassword = async (req, res, next) => {
       });
     }
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -399,7 +394,7 @@ const userProfile = async (req, res, next) => {
       res.render("userProfile", { userData: userData });
     }
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -410,8 +405,8 @@ const profileAddressAdd = async (req, res, next) => {
     const name = req.body.name;
     const phonenumber = req.body.phonenumber;
     const newAddress = {
-      name : req.body.name,
-      phonenumber:req.body.phonenumber,
+      name: req.body.name,
+      phonenumber: req.body.phonenumber,
       address1: req.body.address1,
       address2: req.body.address2,
       state: req.body.state,
@@ -429,10 +424,10 @@ const profileAddressAdd = async (req, res, next) => {
       },
       { new: true }
     );
-    
+
     res.redirect("userProfile");
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -466,11 +461,81 @@ const shop = async (req, res, next) => {
       category,
     });
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
-//
+//to sort Low to high
+const sortLow = async (req, res, next) => {
+  try {
+    const ITEMS_PER_PAGE = 8;
+
+    const category = req.params.category;
+
+    const filter = { productBlock: false };
+    const categories = await Category.find({ categoryBlock: false });
+
+    if (category !== "all") filter.categoryName = category;
+
+    const page = parseInt(req.params.page) || 1;
+    const skipItems = (page - 1) * ITEMS_PER_PAGE;
+
+    const totalCount = await Product.countDocuments(filter);
+
+    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+
+    const productsData = await Product.find(filter)
+      .sort({ price: 1 })
+      .skip(skipItems)
+      .limit(ITEMS_PER_PAGE);
+
+    res.render("shop", {
+      productsData: productsData,
+      categories: categories,
+      currentPage: page,
+      totalPages: totalPages,
+      category,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+//to sort high to low
+const sortHigh = async (req, res, next) => {
+  try {
+    const ITEMS_PER_PAGE = 8;
+
+    const category = req.params.category;
+
+    const filter = { productBlock: false };
+    const categories = await Category.find({ categoryBlock: false });
+
+    if (category !== "all") filter.categoryName = category;
+
+    const page = parseInt(req.params.page) || 1;
+    const skipItems = (page - 1) * ITEMS_PER_PAGE;
+
+    const totalCount = await Product.countDocuments(filter);
+
+    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+
+    const productsData = await Product.find(filter)
+      .sort({ price: -1 })
+      .skip(skipItems)
+      .limit(ITEMS_PER_PAGE);
+
+    res.render("shop", {
+      productsData: productsData,
+      categories: categories,
+      currentPage: page,
+      totalPages: totalPages,
+      category,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 // to go to individual product page
 const singleproduct = async (req, res, next) => {
@@ -484,7 +549,7 @@ const singleproduct = async (req, res, next) => {
       allProducts: allProducts,
     });
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -544,11 +609,10 @@ const addToCart = async (req, res, next) => {
 
     res.json({ message: "product added to cart" });
   } catch (err) {
-
     res
       .status(500)
       .json({ message: "An error occured while adding the product" });
-    next(err)
+    next(err);
   }
 };
 
@@ -557,7 +621,7 @@ const addAddress = async (req, res, next) => {
   try {
     res.render("addAddress");
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -589,7 +653,7 @@ const addnewAddress = async (req, res, next) => {
     );
     res.redirect("checkout");
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -613,7 +677,7 @@ const orderList = async (req, res, next) => {
 
     res.render("orderList", { orders, currentPage: page, totalPages });
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -622,14 +686,34 @@ const cancelOrder = async (req, res, next) => {
   try {
     const id = req.query.id;
 
-    const cancel = await Order.updateOne(
-      { _id: id },
-      { $set: { status: "return" } }
-    );
-    res.redirect("/orderList");
+    const cancel = await Order.findOne({ _id: id });
 
+    if (cancel.paymentMethod === "Cash On Delivery") {
+      await Order.updateOne({ _id: id }, { $set: { status: "return" } });
+      res.redirect("/orderList");
+    } else {
+      const orderAmount = cancel.finalAmount;
+      const walletTransaction = {
+        date: new Date(),
+        type: "Credit",
+        amount: orderAmount,
+      };
+      const user = await User.findOneAndUpdate(
+        { _id: req.session.user_id },
+        {
+          $inc: { wallet: orderAmount },
+          $push: { walletTransaction: walletTransaction },
+        },
+        { new: true }
+      );
+      console.log();
+
+      await Order.updateOne({ _id: id }, { $set: { status: "return" } });
+
+      res.redirect("/orderList");
+    }
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
@@ -645,22 +729,126 @@ const orderFullDetails = async (req, res, next) => {
 
     res.render("orderFullDetails", { orders, order });
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
 // const createOrder= async(req,res,next)=>{
 //   try{
 //     let amount= req.body.amount * 100
-    
-      
+
 //     }
 //   }catch(err){
 //     next(err)
 //   }
 // }
 
+//  to render the wallet transaction
+const walletTransaction = async (req, res, next) => {
+  try {
+    const userId = req.session.user_id;
+    const user = await User.findOne({ _id: userId })
+    .sort({ dateOrdered: -1 });;
+    res.render("walletTransaction", { user })
+    
+  } catch (err) {
+    next(err);
+  }
+};
 
+// to download the invoice
+const invoice = async (req, res, next) => {
+  try {
+    const id = req.query.id;
+    const userId = req.session.user_id;
+    let result = await dashboardHelper.getOrder(id);
+    const date = result.dateOrdered.toLocaleDateString();
+    const product = result.orderItems;
+
+    const order = {
+      id: id,
+      total: parseInt(result.finalAmount),
+      date: date,
+      payment: result.paymentMethod,
+      name: result.address.name,
+      address1: result.address.address1,
+      address2: result.address.address2,
+      state: result.address.state,
+      pincode: result.address.pincode,
+      orderItems: result.orderItems,
+    };
+
+    console.log(order.orderItems[0]);
+    const products = order.orderItems.map((orderItems) => ({
+      quantity: parseInt(orderItems.kg),
+      description: orderItems.productId,
+      "tax-rate": 0,
+      price: parseInt(Math.floor(orderItems.total / orderItems.kg)),
+    }));
+
+    var data = {
+      customize: {},
+      images: {
+        logo: "https://public.easyinvoice.cloud/img/logo_en_original.png",
+        background: "https://public.easyinvoice.cloud/img/watermark-draft.jpg",
+      },
+      sender: {
+        company: "GreenLeaves",
+        address: "Brototype",
+        zip: "686633",
+        city: "Maradu",
+        country: "India",
+      },
+      client: {
+        company: order.name,
+        address: order.address1,
+
+        zip: order.pincode,
+        state: order.state,
+        country: "India",
+      },
+      information: {
+        number: order.id,
+        date: order.date,
+        "due-date": "Nil",
+      },
+      products: products,
+      // The message you would like to display on the bottom of your invoice
+      "bottom-notice": "Thankyou for your purchase with GreenLeaves.",
+    };
+    result = Object.values(result);
+
+    easyinvoice
+      .createInvoice(data, async (result) => {
+        //The response will contain a base64 encoded PDF file
+
+        if (result && result.pdf) {
+          await fs.writeFileSync("invoice.pdf", result.pdf, "base64");
+          // Set the response headers for downloading the file
+          res.setHeader(
+            "Content-Disposition",
+            'attachment; filename="invoice.pdf"'
+          );
+          res.setHeader("Content-Type", "application/pdf");
+
+          // Create a readable stream from the PDF base64 string
+          const pdfStream = new Readable();
+          pdfStream.push(Buffer.from(result.pdf, "base64"));
+          pdfStream.push(null);
+          // Pipe the stream to the response
+          pdfStream.pipe(res);
+        } else {
+          // Handle the case where result.pdf is undefined or empty
+          res.status(500).send("Error generating the invoice");
+        }
+      })
+      .catch((err) => {
+        console.log(err, "errrrrrr");
+      });
+  } catch (err) {
+    next(err);
+  }
+};
 
 module.exports = {
   guestUser,
@@ -684,6 +872,8 @@ module.exports = {
   forgetpasswordload,
   resetpassword,
   shop,
+  sortLow,
+  sortHigh,
   singleproduct,
   addToCart,
   addAddress,
@@ -691,5 +881,6 @@ module.exports = {
   orderList,
   cancelOrder,
   orderFullDetails,
-
+  walletTransaction,
+  invoice,
 };

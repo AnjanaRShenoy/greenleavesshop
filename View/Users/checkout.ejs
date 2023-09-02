@@ -1,6 +1,6 @@
 <%- include('../layouts/userHeader.ejs')%>
 
-<div class="hero-wrap hero-bread" style="background-image: url('images/bg_1.jpg')">
+<div class="hero-wrap hero-bread" style="background-image: url('/images/bg_1.jpg')">
   <div class="container">
     <div class="row no-gutters slider-text align-items-center justify-content-center">
       <div class="col-md-9 ftco-animate text-center">
@@ -79,7 +79,6 @@
           </div>
           </p>
 
-
           <div class="col-lg-4 mt-5 cart-wrap ftco-animate">
             <div class="cart-total mb-3">
               <h3>Coupon Code</h3>
@@ -87,13 +86,14 @@
 
               <div class="form-group">
                 <label>Coupon code</label>
-                <input type="text" class="form-control text-left px-3" placeholder="" readonly>
+                <input type="text" class="form-control text-left px-3" placeholder="<%= coupon.couponCode%>">
               </div>
 
             </div>
             <p><a href="/couponLoad" class="btn btn-primary py-3 px-4">Apply Coupon</a></p>
 
           </div>
+
 
         </div>
 
@@ -105,56 +105,88 @@
                 <h3 class="billing-heading mb-4">Cart Total</h3>
                 <p class="d-flex">
                   <span>Subtotal</span>
-                  <span>₹ <%= subtotal %></span>
+
+                  <span class="totalPrice">
+                    ₹<%= subtotal %>
+                  </span>
                 </p>
                 <p class="d-flex">
                   <span>Delivery</span>
-                  <span> ₹ 0.00</span>
+                  <span> Free</span>
                 </p>
+                <span id="coupon" data-coupon="<%= coupon.couponId%>"></span>
+
                 <p class="d-flex">
                   <span>Discount</span>
-                  <span> ₹ 0.00</span>
+                  <% if(coupon && coupon.couponAmount !==undefined){ %>
+                  <span>
+                    ₹<%= coupon.couponAmount %>
+                  </span>
+                  <% } else { %>
+                  <% coupon.couponAmount=0 %>
+                  <span>
+                    <%= coupon.couponAmount %>
+                  </span>
+                  <% } %>
                 </p>
-                <hr />
+
                 <p class="d-flex total-price">
 
                   <span>Total</span>
-                  <span id="totalValues" name="amount">₹ <%= grandTotal %></span>
+                  <span>
+                    <% if(coupon && coupon.couponAmount !==undefined){ %>
+                    <span id="totalValues" name="amount" data-amount="<%= priceaftercoupon=subtotal - coupon.couponAmount; %>">
+                      <%= priceaftercoupon=subtotal - coupon.couponAmount; %>
+                    </span>
+                    <% } else {%>
+                    <% coupon.couponAmount=0 %>
+                    <span id="totalValues" name="amount" data-amount="<%= priceaftercoupon=subtotal %>">
+                      <%= priceaftercoupon=subtotal %>
+                    </span>
+                    <% } %>
+                  </span>
+                </p>
                 </p>
               </div>
             </div>
 
             <div class="col-md-12">
               <div class="cart-detail p-3 p-md-4">
-                <h3 class="billing-heading mb-4">Payment Method</h3>
-                <div class="form-group">
-                  <div class="col-md-12">
-                    <div class="radio">
-                      <label><input type="radio" name="payment" id="cod" value="Cash On Delivery" class="mr-2" checked />
-                        Cash on delivery</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="col-md-12">
-                    <div class="radio">
-                      <label><input type="radio" name="payment" id="Wallet" value="Wallet" class="mr-2" />
-                        Wallet</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="col-md-12">
-                    <div class="radio">
-                      <label><input type="radio" name="payment" id="Razorpay" value="Razorpay" class="mr-2" />
-                        RazorPay</label>
-                    </div>
-                  </div>
-                </div>
+                <div class="payment-method">
+                  <h3 class="billing-heading mb-4">Payment Method</h3>
 
-                <p>
-                  <button id="placeOrderButton" class="btn btn-primary py-3 px-4" type="submit">Place an order</a>
-                </p>
+                  <div class="form-group">
+                    <div class="col-md-12">
+
+                      <div class="radio">
+                        <label><input type="radio" name="payment" id="Wallet" value="Wallet" class="mr-2" />
+                          Wallet ₹<%=user.wallet %></label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      <div class="radio">
+                        <label><input type="radio" name="payment" id="cod" value="Cash On Delivery" class="mr-2" checked />
+                          Cash on delivery</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      <div class="radio">
+                        <label><input type="radio" name="payment" id="Razorpay" value="Razorpay" class="mr-2" />
+                          RazorPay</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p>
+                    <button id="placeOrderButton" class="btn btn-primary py-3 px-4" type="submit">Place an order</a>
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -187,7 +219,7 @@
   </div>
 </section>
 
-<%- include('../layouts/userFooter.ejs')%>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="/js/jquery-3.2.1.min.js"></script>
@@ -228,13 +260,29 @@
         if (placeorder) {
           const addressId = document.querySelector('input[name="address"]:checked').value
           const paymentMethod = document.querySelector('input[name="payment"]:checked').value
-          console.log(paymentMethod);
+          const coupon = document.querySelector('#coupon')
+          console.log(coupon, "coupon");
+
+
           if (paymentMethod == 'Razorpay') {
             let formData = $('.pay-form').serialize()
+
+            const well = {
+              paymentType: paymentMethod,
+
+              addressId: addressId,
+
+            }
+            if (coupon) {
+              well.coupon = coupon.getAttribute('data-coupon')
+            }
+
+            console.log(well);
             $.ajax({
               url: "/createOrder",
               type: "POST",
-              data: formData,
+              data: well,
+
               success: function(res) {
 
                 if (res.success) {
@@ -265,6 +313,7 @@
                   var rzp1 = new Razorpay(options)
 
                   rzp1.on('payment.failed', function(response) {
+
                     swal("payment failed", "", "error")
                   })
                   rzp1.open()
@@ -273,6 +322,102 @@
                 }
               }
             })
+          } else if (paymentMethod == 'Wallet') {
+
+            const wallet = JSON.parse(decodeURIComponent('<%- encodeWallet %>'))
+
+            const totalValues = parseFloat($('#totalValues').data('amount'));
+
+            if (!isNaN(totalValues) && totalValues <= wallet) {
+
+              $('.pay-form').append($('<input>').attr({
+                type: 'hidden',
+                name: 'addressId',
+                value: addressId
+              }));
+              var formData = $('.pay-form').serialize()
+
+              var userId = ''
+
+              var amount = parseFloat($('#totalValues').data('amount'))
+
+              formData += '&paymentType=' + paymentMethod;
+
+              formData += '&amount=' + amount;
+
+              const wall = {
+                paymentType: paymentMethod,
+                amount: amount,
+                addressId: addressId
+              }
+
+              $.ajax({
+                url: '/walletPayment',
+                type: 'POST',
+                data: wall,
+
+                success: function(res) {
+                  if (res.success) {
+                    var form = $('.pay-form')
+                    var url = form.attr('action')
+                    var method = form.attr('method')
+                    $('<input>').attr({
+                      type: 'hidden',
+                      name: 'paymentMethod',
+                      value: paymentMethod,
+                    }).appendTo(form)
+                    form.attr('action', '/checkout')
+
+                    let couponId = null
+                    if (coupon) {
+                      couponId = coupon.getAttribute('data-coupon')
+                    }
+
+                    fetch(`/checkout`, {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+
+                        },
+                        body: JSON.stringify({
+                          addressId,
+                          paymentType: paymentMethod,
+                          coupon: couponId
+                        }),
+
+                      })
+                      .then(response => response.json())
+                      .then(data => {
+                        if (data.success) {
+                          swal({
+                            title: "Order has been placed successfully",
+                            timer: 2000
+                          });
+                          setTimeout(function() {
+
+                            location.href = data.url
+                          }, 3000);
+                        }
+                      })
+                      .catch(error => {
+                        console.log(error);
+                      })
+
+                  } else {
+                    $('.payment-method').after(`<p class="error-message"> ${res.message}</p>`)
+                    setTimeout(function() {
+                      $('.error-message').remove()
+                    }, 3000)
+                  }
+                },
+                error: function() {
+                  alert('An error occurred')
+                }
+              })
+            } else {
+              swal("Insufficient balance")
+            }
+
           } else {
             var form = $('.pay-form')
             var url = form.attr('action')
@@ -283,7 +428,10 @@
               value: paymentMethod
             }).appendTo(form)
             form.attr('action', '/checkout')
-
+            let couponId = null
+            if (coupon) {
+              couponId = coupon.getAttribute('data-coupon')
+            }
 
 
             fetch(`/checkout`, {
@@ -294,7 +442,8 @@
                 },
                 body: JSON.stringify({
                   addressId,
-                  paymentType: paymentMethod
+                  paymentType: paymentMethod,
+                  coupon: couponId
                 }),
               })
               .then(response => response.json())
@@ -305,7 +454,8 @@
                     timer: 2000
                   });
                   setTimeout(function() {
-                    location.href = `/orderDetails/${data.orderId}`;
+
+                    location.href = data.url
                   }, 3000);
                 }
               })
@@ -319,28 +469,39 @@
     });
 
     function verifyPayment(response) {
+
       const addressId = document.querySelector('input[name="address"]:checked').value
       const paymentMethod = document.querySelector('input[name="payment"]:checked').value
-      console.log('addressId:')
-      console.log(addressId)
+      const coupon = document.querySelector('#coupon')
+      let couponId = null
+      if (coupon) {
+        couponId = coupon.getAttribute('data-coupon')
+      }
+
+
       fetch('/verifyPayment', {
+
 
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
+
           body: JSON.stringify({
             addressId,
             paymentType: paymentMethod,
             razorpayOrderId: response.razorpay_order_id,
             razorpayPaymentId: response.razorpay_payment_id,
-            secret: response.razorpay_signature
+            secret: response.razorpay_signature,
+            coupon: couponId
           })
+
         })
+
         .then(response => response.json())
         .then(data => {
-          console.log("data")
-          console.log(data);
+
+          console.log(data, "dataaaa");
           if (data.success) {
             const container = document.querySelector('.container');
             container.style.display = 'none';
@@ -349,7 +510,7 @@
               timer: 2000
             });
             setTimeout(function() {
-              location.href = "/orderDetails";
+              location.href = data.url;
             }, 3000);
           } else {
             swal("Payment failed");
@@ -388,3 +549,5 @@
       document.getElementById('addrbox').innerText = selectedAddress;
     }
   </script> -->
+
+<%- include('../layouts/userFooter.ejs')%>

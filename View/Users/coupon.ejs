@@ -1,57 +1,85 @@
 <%- include('../layouts/userHeader.ejs')%>
 
   <section class="h-100 gradient-custom">
+    <div class="hero-wrap hero-bread" style="background-image: url('/images/bg_1.jpg')">
+      <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+          <div class="col-md-9 ftco-animate text-center">
+            <p class="breadcrumbs">
+              <span class="mr-2"><a href="index.html"></a></span>
+            </p>
+            <h1 class="mb-0 bread">My Coupons</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  
     <div class="container py-5 h-100">
+
       <div class="row d-flex justify-content-center align-items-center h-100">
+        <%let flag=0 %>
         <% for (let i=0; i < coupon.length; i++) { %>
-          
-          <div class="col-lg-10 col-xl-8 mb-4">
-            <div data-id="<%=coupon._id %>" class="coupon">
-              <div class="card p-2" style="border-radius: 10px; color: black;">
+          <% let userHasCoupon = coupon[i].user.findIndex(u => u.toString() === userId.toString()) !== -1 %>
+          <% if(coupon[i].minimumAmount<userCartData.grandTotal && !userHasCoupon) { %>
+            <% flag=1 %>
+            <div class="col-lg-10 col-xl-8 mb-4">
+              <div data-id="<%=coupon[i]._id %>" class="coupon">
+                <div class="card p-2" style="border-radius: 10px; color: black;">
 
 
-                <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-center gap-2">
-                    
-                    <p class="lead fw-strong mb-0 couponcode" style="color: #82ae46; ">
-                      <%= coupon[i].couponCode %>
-                    </p>
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center gap-2">
+
+                      <p class="lead fw-strong mb-0 couponcode" style="color: #82ae46; ">
+                        <span class="couponCode">
+                          <%= coupon[i].couponCode %>
+                        </span>
+                      </p>
+                      <p class="small text-muted mb-0"> </p>
+                    </div>
+                  </div>
                   
+                  <div class="d-flex ps-4">
+
+                    <p class="text-muted h6 couponDescription">
+                      <%=coupon[i].description%>
+                    </p>
 
 
+                  </div>
+                
+                  <div class="d-flex justify-content-between mb-6">
 
-                    <p class="small text-muted mb-0"> </p>
+                    <p class="text-danger mb-0 ">
+                      <span class="couponStartDate">
+                        <%=coupon[i].startDate.toDateString()%> -
+                          <%=coupon[i].expiryDate.toDateString()%>
+                      </span>
+                    </p>
+
+
                   </div>
                 </div>
-                <div class="d-flex ps-4">
-                 
-                  <p class="text-muted h6 couponDescription">
-                    <%=coupon[i].description%>
-                  </p>
-             
-
+                <div class="card-footer border-0 px-4 py-4"
+                  style="background-color: #82ae46; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+                  <h5 class="d-flex align-items-center justify-content-centre text-white text-uppercase mb-0 ">
+                    <span>
+                      Discount Amount: ₹ <span class="couponAmount">
+                        <%=coupon[i].couponAmount %>
+                      </span>
+                  </h5>
+                  </span>
                 </div>
-                <div class="d-flex justify-content-between mb-6">
-                  
-                  <p class="text-danger mb-0 couponStartDate">Validity: <%=coupon[i].startDate.toDateString()%> -
-                      <%=coupon[i].expiryDate.toDateString()%>
-                  </p>
-                
-
-                </div>
-              </div>
-              <div class="card-footer border-0 px-4 py-4"
-                style="background-color: #82ae46; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
-                <h5 class="d-flex align-items-center justify-content-centre text-white text-uppercase mb-0 couponAmount">
-                  Discount Amount: ₹<%=coupon[i].couponAmount %> <span class="h2 mb-0 ms-2"> </span></h5>
               </div>
             </div>
-          </div>
-
+          <% }  %>
+        <% } %>
+        <%if (!flag) { %>
+          <h2> Sorry, No coupons</h6>
           <% } %>
       </div>
     </div>
-    
+
   </section>
 
 
@@ -61,20 +89,23 @@
     <script>
 
       const coupons = document.querySelectorAll('.coupon')
-      coupons.forEach(function(coupon) {
-        coupon.addEventListener('click', function(){
-          const couponData ={
-            couponId:coupon.getAttribute('data-id'),
-            code: coupon.querySelector('.coupon'),
-            discountAmount: coupon.querySelector('.couponDescription'),
-            startDate: coupon.querySelector('.couponStartDate'),
-            amount: coupon.querySelector('.couponAmount')
-          }
-          const { couponId, code, discountAmount }= couponData
+     
+      coupons.forEach(function (coupon) {
+        coupon.addEventListener('click', function () {
+          const couponData = {
+            couponId: coupon.getAttribute('data-id'),
+            couponCode: coupon.querySelector('.couponcode').textContent.trim(),
+            couponAmount: coupon.querySelector('.couponAmount').textContent.trim(),
+            startDate: coupon.querySelector('.couponStartDate').textContent.trim(),
 
-          const queryParams =`?couponId=${couponId}&code=${code}&discountAmount=${discountAmount}`
-          window.location.href="/checkout"+ queryParams
-          
+          }
+
+          const { couponId, couponCode, couponAmount } = couponData
+
+          const queryParams = `?couponId=${couponId}&couponCode=${couponCode}&couponAmount=${couponAmount}`
+          window.location.href = "/checkout" + queryParams
+
+
         })
       })
     </script>

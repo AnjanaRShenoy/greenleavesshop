@@ -5,42 +5,41 @@
   <br>
   <br>
   <div class="container" style="padding-left: 100px;">
-    <!-- <link rel="stylesheet" href="/css/style.css"> -->
+    <link rel="stylesheet" href="/css/style.css">
 
     <div>
-      <h2 class="category-heading">Edit Category</h2>
+      <h2 class="category-heading">Edit Banner</h2>
 
 
     </div>
 
     <div class="main-content">
-      <form id='addForm' onsubmit="return validateForm();" action="/admin/editCategory" method="post" enctype="multipart/form-data">
+      <form id='addForm' onsubmit="return validateForm();" action="/admin/editBanner" method="post" enctype="multipart/form-data">
         <div class="category-form">
           <br><span class="label-input100" strong
-            style="color:black">CATEGORY</span><br>
-            <input type="text" style="border-color:black" name="categoryName" class="form-control" id="categoryName" value="<%=category.categoryName %>"
+            style="color:black">Banner Name</span><br>
+            <input type="text" style="border-color:black" name="bannerName" class="form-control" id="categoryName" value="<%=banner.bannerName %>"
             onkeyup="validateCategory()">
             
             <input type="text" name="id" class="form-control" id="proId" onkeyup="validateName()"
-            value="<%=category._id %>" hidden>
+            value="<%=banner._id %>" hidden>
             <span class="formerror text-danger" id="category-info"></span><br>
-
             <span class="label-input100" strong
-            style="color:black">CATEGORY OFFER</span><br>
+            style="color:black">Banner link</span><br>
           
-            <input type="text" style="border-color:black" name="categoryOffer" class="form-control" id="categoryOffer" value="<%=category.categoryOffer %>"
+            <input type="text" style="border-color:black" name="bannerLink" class="form-control" id="categoryOffer" value="<%=banner.link %>"
             onkeyup="validateOffer()">
             <span class="formerror text-danger" id="offer-info"></span><br>
 
           <div class="m-4">
             
-            <span class="label-input100" strong style="color:black">CATEGORY IMAGE</span><br>
+            <span class="label-input100" strong style="color:black">Banner Image</span><br>
             <label style="color: #fff; font-weight: 300;">Upload Images</label><br>
               <input type="file" style="border-color:black" class="form-control-file custom-file-input" id="preview-image"
-              name="categoryImage" onchange="previewImage(event)" style="opacity:100" multiple onkeyup="validateImage()">
+              name="bannerImage" onchange="previewImage(event)" style="opacity:100" multiple onkeyup="validateImage()">
               <span class="formerror text-danger" id="image-info"></span>
             </div>
-          <button type="submit" class="btn btn-primary category-btn">Add</button>
+          <button type="submit" class="btn btn-primary category-btn">Submit</button>
         </div>
 
         <span>
@@ -127,12 +126,12 @@
         
 
         if (category.length === 0) {
-          categoryError.innerHTML = "Category Name is required";
+          categoryError.innerHTML = "Banner Name is required";
           return false;
         }
 
         if (!category.replace(/\s/g, "").length) {
-          categoryError.innerHTML = "Category Name cannot be just spaces";
+          categoryError.innerHTML = "Banner Name cannot be just spaces";
           return false;
         } else {
           categoryError.innerHTML = "";
@@ -144,16 +143,10 @@
         var offer = document.getElementById("categoryOffer").value.trim();
 
         if (offer.length === 0) {
-          offerError.innerHTML = "Category Offer is required";
+          offerError.innerHTML = "Banner is required";
           return false;
         }
-        if(isNaN(offer) || parseFloat(offer) < 0)
-        {
-          offerError.innerHTML = "Please enter a valid category Offer";
-          return false;
-        }
-
-        
+               
         else {
           offerError.innerHTML = "";
           return true;

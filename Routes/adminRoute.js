@@ -62,6 +62,8 @@ admin_route.get('/editProducts',preventCache,auth.isLogin,adminController.editPr
 
 admin_route.post('/editProducts',multer.upload.array('productImage',3),adminController.editProducts)
 
+admin_route.get('/deleteImage', preventCache, auth.isLogin,adminController.deleteImage)
+
 admin_route.get('/orderList',preventCache,auth.isLogin,adminController.orderList)
 
 admin_route.get('/orderDetails',preventCache,auth.isLogin,adminController.orderDetails)
@@ -85,5 +87,26 @@ admin_route.get('/unblockCoupon',preventCache,auth.isLogin,adminController.unblo
 admin_route.get('/editCoupon',preventCache,auth.isLogin,adminController.editCouponLoad)
 
 admin_route.post('/editCoupon',adminController.editCoupon)
+
+admin_route.get('/bannerList', preventCache, auth.isLogin, adminController.bannerList)
+
+admin_route.get('/addBannerLoad',preventCache, auth.isLogin,adminController.addBannerLoad)
+
+admin_route.post('/bannerAdd',multer.upload.array('bannerImage',1),adminController.bannerAdd)
+
+admin_route.get('/blockBanner',preventCache,auth.isLogin,adminController.blockBanner)
+
+admin_route.get('/unblockBanner',preventCache,auth.isLogin,adminController.unblockBanner)
+
+admin_route.get('/editBannerLoad',preventCache,auth.isLogin,adminController.editBannerLoad)
+
+admin_route.post('/editBanner',multer.upload.array('bannerImage',1),adminController.editBanner)
+
+admin_route.get('/salesReport',preventCache,auth.isLogin,adminController.salesReportLoad)
+admin_route.get('/salesReport/:orders/p/:page',preventCache,auth.isLogin,adminController.salesReportLoad)
+
+admin_route.get('/generateSalesReport',preventCache,auth.isLogin,adminController.generateSalesReport)
+
+admin_route.get('/salesReportDownload', adminController.downloadSalesReport);
 
 module.exports=admin_route

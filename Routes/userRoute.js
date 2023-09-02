@@ -84,6 +84,11 @@ user_route.post('/forgot-password',userController.resetpassword)
 user_route.get('/shop',preventCache,auth.isLogin,userController.shop)
 user_route.get('/shop/:category/p/:page',preventCache,auth.isLogin,userController.shop)
 
+user_route.get('/sortLow/',preventCache,auth.isLogin,userController.sortLow)
+user_route.get('/sortLow/:category/p/:page',preventCache,auth.isLogin,userController.sortLow)
+user_route.get('/sortHigh',preventCache,auth.isLogin,userController.sortHigh)
+user_route.get('/sortHigh/:category/p/:page',preventCache,auth.isLogin,userController.sortHigh)
+
 user_route.get('/userProfile',preventCache,auth.isLogin,userController.userProfile)
 
 user_route.post('/userProfile',userController.profileAddressAdd)
@@ -122,5 +127,11 @@ user_route.get('/couponLoad',preventCache,auth.isLogin,couponController.couponLo
 user_route.post('/createOrder', paymentController.createOrder)
 
 user_route.post('/verifyPayment', paymentController.verifyPayment)
+
+user_route.post('/walletPayment', paymentController.walletPayment)
+
+user_route.get('/walletTransaction',preventCache,auth.isLogin,userController.walletTransaction)
+
+user_route.get('/invoice', preventCache, auth.isLogin, userController.invoice)
 
 module.exports=user_route

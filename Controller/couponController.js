@@ -11,14 +11,14 @@ const { LEGAL_TCP_SOCKET_OPTIONS } = require("mongodb");
 const couponLoad=async(req,res,next)=>{
     try{
       const user= await User.findOne({ _id: req.session.user_id })
-      
+      const userId= req.session.user_id
         const filter = { status: "Active" };
         const coupon = await Coupon.find(filter)
         .sort({ _id: -1 })
         const userCartData= await Cart.findOne({ user_id: req.session.user_id})
         .populate("product.productId")
-      
-      res.render('coupon',{coupon, userCartData})
+   
+      res.render('coupon',{coupon, userCartData, userId})
     }catch(err){
       next(err)
     }

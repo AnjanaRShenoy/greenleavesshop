@@ -16,7 +16,7 @@
                   </div>
             </section> -->
 
-    <div class="container" style="border-color: black;">
+    <div class="container" style="border-color: black; padding-right: 50px;">
       <div class="row justify-content-center">
         <div class="col-md-6 text-center mb-5">
           <h2 class="heading-section">Order History</h2>
@@ -37,7 +37,7 @@
               <th scope="col">Name</th>
               <th scope="col">Price</th>
               <th scope="col">Kg</th>
-              <th scope="col">Total</th>
+              <th scope="col">Paid</th>
               <th scope="col">Status</th>
               <!-- <th>Status</th>  -->
             </tr>
@@ -77,8 +77,9 @@
                 </td>
                 
                 <td>
-                  ₹<%= orders[i].grandTotal %>
+                  ₹<%= orders[i].finalAmount %>
                 </td>
+
                 <td>
                   <%= orders[i].status %>
                 </td>

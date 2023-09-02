@@ -1,0 +1,90 @@
+<%- include('../layouts/adminHeader.ejs')%>
+  <!-- ============================================================== -->
+  <!-- Page wrapper  -->
+  <!-- ============================================================== -->
+
+  <br>
+  <br>
+  <div class="container" style=" padding-left: 180px;">
+
+
+
+    <!-- <section class="ftco-section">
+                <div class="input-group rounded">
+                    <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+                    <span class="input-group-text border-0" id="search-addon">
+                      <i class="fas fa-search"></i>
+                    </span>
+                  </div>
+            </section> -->
+    <a class="btn btn-primary" href="/admin/addBannerLoad" role="button">Add Banner</a>
+    <br>
+    <br>
+    <br>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <h2 class="heading-section">Banner list</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="row text-center">
+      <!-- <div class="col-md-12">
+                <h4 class="text-center mb-4"></h4> -->
+      <div class="table-wrap">
+        <table class="table">
+          <thead class="thead-primary">
+            <tr>
+              <th>Banner ID</th>
+              <th>Banner Name</th>
+
+              <th>Image</th>
+              <th>Action</th>
+              <!-- <th>Status</th>  -->
+            </tr>
+          </thead>
+          <tbody>
+            <% for (var i=0; i < banner.length; i++) { %>
+              <tr>
+                <td>
+                  <%= banner[i]._id %>
+                </td>
+                <td>
+                  <%= banner[i].bannerName %>
+                </td>
+
+
+                <td>
+                  <img src="/images/<%=banner[i].bannerImage[0]%>" alt="Product Image"
+                    style="width: 50px; height: 50px;">
+
+                </td>
+                <% if(banner[i].isActive==true){ %>
+                  <td>
+                    <div class="btn bg-secondary">
+                      <a class="text-light text-decoration-none unblock-link" href="/admin/blockBanner?id=<%= banner[i]._id %>">Block</a>
+                    </div>
+                  </td>
+                  <% }else{ %>
+                  <td>
+                    <div class="btn bg-secondary">
+                      <a class="text-light text-decoration-none unblock-link" href="/admin/unblockBanner?id=<%= banner[i]._id %>">Unblock</a>
+                    </div>
+                  </td>
+                  <% } %>
+                  <td>
+                    <div class="btn bg-secondary">
+                      <a class="text-light text-decoration-none unblock-link" href="/admin/editBannerLoad?id=<%= banner[i]._id %>">Edit</a>
+                    </div>
+                  </td>
+              </tr>
+              <!-- Add more category rows here -->
+              <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <%- include('../layouts/adminFooter.ejs')%>

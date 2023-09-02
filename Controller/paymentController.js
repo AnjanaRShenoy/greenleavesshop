@@ -3,6 +3,7 @@ const Category = require("../Model/categoryModel");
 const Product = require("../Model/productModel");
 const Cart = require("../Model/cartModel");
 const Order = require("../Model/orderModel");
+const Coupon = require("../Model/couponModel");
 
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
@@ -19,8 +20,9 @@ const razorpayInstance = new RazorPay({
 
 // to create the order
 const createOrder = async (req, res, next) => {
-  console.log("Going to create order");
+  const { addressId, coupon, paymentType } = req.body;
   try {
+  
     const userId = req.session.user_id;
     const userCartData = await Cart.findOne({ user_id: userId }).populate(
       "product.productId"
@@ -33,9 +35,14 @@ const createOrder = async (req, res, next) => {
         userCartData.product[i].productId.price * userCartData.product[i].kg;
       amount += ProductPrc;
     }
+    let couponAmount = 0;
+    if (coupon) {
+      const coupons = await Coupon.findById(coupon);
+      couponAmount = coupons.couponAmount;
+    }
 
     const options = {
-      amount: amount * 100,
+      amount: (amount - couponAmount) * 100,
       currency: "INR",
       receipt: "shenoyanjana96@gmail.com",
     };
@@ -61,12 +68,12 @@ const createOrder = async (req, res, next) => {
 // to verify if the payment is successful or not
 const verifyPayment = async (req, res, next) => {
   try {
-    const userId = req.session.user_id;
+    const user = await User.findById(req.session.user_id);
+
     const orderId = new mongoose.Types.ObjectId();
 
-    // -------------------------------------------
-    const user = await User.findById(req.session.user_id);
-    console.log(user._id);
+    const couponId = req.body.coupon;
+
     const cart = await Cart.findOne({ user_id: req.session.user_id })
       .populate({
         path: "product.productId",
@@ -98,8 +105,6 @@ const verifyPayment = async (req, res, next) => {
 
     const result = await Product.bulkWrite(updateOperations);
 
-    console.log("addressId:");
-    console.log(req.body.addressId);
     const address = user.address.id(req.body.addressId);
     if (
       address.name &&
@@ -113,14 +118,34 @@ const verifyPayment = async (req, res, next) => {
       for (let i = 0; i < cart.product.length; i++) {
         grandTotal += cart.product[i].productId.price * cart.product[i].kg;
       }
-      console.log(req.body.paymentType);
-      
+
+      let couponAmoun = 0;
+      let finalAmount = grandTotal;
+
+      if (couponId !== "") {
+        
+        await Coupon.updateOne(
+          { _id: new mongoose.Types.ObjectId(couponId) },
+          { $push: { user: user._id } }
+        );
+        
+        const coupons = await Coupon.findById({
+          _id: new mongoose.Types.ObjectId(couponId),
+        });
+        
+        couponAmoun = coupons.couponAmount;        
+        finalAmount = grandTotal - couponAmoun;
+        
+      }
+
       const newOrder = new Order({
         _id: orderId,
         user_id: req.session.user_id,
         address,
         orderItems: cart.product,
         grandTotal: grandTotal,
+        couponAmount: couponAmoun,
+        finalAmount: finalAmount,
         paymentMethod: req.body.paymentType,
       });
 
@@ -132,6 +157,7 @@ const verifyPayment = async (req, res, next) => {
       );
 
       await newOrder.save();
+
       // const orderId = newOrder._id;
       const deleteCart = await Cart.deleteOne({ user_id: req.session.user_id });
     } else {
@@ -140,16 +166,15 @@ const verifyPayment = async (req, res, next) => {
     // -------------------------------------------
 
     const { razorpayOrderId, razorpayPaymentId, secret } = req.body;
-    console.log({
-      user_id: userId,
-      order_id: razorpayOrderId,
-    });
+
     const order = await Order.findOne({
       _id: orderId,
     });
-    console.log(order, "kiiii");
+
     // if (order.status === "pending")
-      return res.status(200).json({ success: true });
+    return res
+      .status(200)
+      .json({ success: true, url: `/orderDetails/${order._id}` });
 
     // const hmac = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET);
 
@@ -174,11 +199,33 @@ const verifyPayment = async (req, res, next) => {
     // }
   } catch (err) {
     // next(err);
+    console.trace(err);
     res.send(err.message);
+  }
+};
+
+// to post the wallet payment
+const walletPayment = async (req, res, next) => {
+  try {
+    const amount = parseInt(req.body.amount);
+
+    const user = await User.findById(req.session.user_id);
+    user.wallet -= amount;
+    await user.save();
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Payment successful" });
+  } catch (err) {
+    next(err);
+    return res
+      .status(500)
+      .json({ success: false, message: "An error occurred" });
   }
 };
 
 module.exports = {
   createOrder,
   verifyPayment,
+  walletPayment,
 };

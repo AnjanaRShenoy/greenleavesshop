@@ -1,0 +1,143 @@
+<%- include('../layouts/adminHeader.ejs')%>
+  <!-- ============================================================== -->
+  <!-- Page wrapper  -->
+  <!-- ============================================================== -->
+  <br>
+  <br>
+  <div class="container" style="padding-left: 280px;">
+    <!-- <link rel="stylesheet" href="/css/style (3).css"> -->
+
+    <div>
+      <h2 class="category-heading">Add Banner</h2>
+    </div>
+
+    <div class="main-content">
+      <form id="addForm"onsubmit="return validateForm();" action="/admin/bannerAdd" method="post" enctype="multipart/form-data">
+        <div class="category-form">
+          <span class="label-input100" strong
+            style="color:black">BANNER NAME</span><br>
+          
+            <input type="text" style="border-color:black" name="bannerName" class="form-control" id="categoryName"
+            onkeyup="validateCategory()">
+            <span class="formerror text-danger" id="category-info"></span><br>
+
+
+          
+          
+            
+                <label style="color: #fff; font-weight: 300;">Upload Images</label><br>
+                <span class="label-input100" strong style="color:rgb(51, 47, 47)">BANNER IMAGE</span><br>
+
+                <input type="file" style="border-color:black" class="form-control-file custom-file-input" id="preview-image"
+                name="bannerImage"  style="opacity:100" multiple onkeyup="validateImage()"><br>
+                <span class="formerror text-danger" id="image-info"></span><br><br><br>
+             
+          <button type="submit" class="btn btn-primary category-btn">Add</button>
+        </div>
+
+        <span>
+          <p style="color: green"></p>
+          <% if(typeof successMessage!=='undefined' ){ %>
+            <p style="color:green"><%- successMessage %></p>
+            <% } if(typeof errorMessage!=='undefined' ){ %>
+              <p style="color:red"><%- errorMessage %></p>
+              <% } %>
+        </span>
+      </form>
+
+
+
+    </div>
+
+
+    <!-- 
+<footer class="footer text-center"> 2021 © Ample Admin brought to you by <a
+    href="https://www.wrappixel.com/">wrappixel.com</a>
+</footer> -->
+    <!-- ============================================================== -->
+    <!-- End footer -->
+    <!-- ============================================================== -->
+  </div>
+  <!-- ============================================================== -->
+  <!-- End Page wrapper  -->
+
+  
+
+
+
+    <script>
+      var categoryError = document.getElementById("category-info");
+      var imageError = document.getElementById("image-info");
+      var submitError = document.getElementById("submit-info");
+      var addform=document.getElementById('addForm')
+
+      function validateForm() {
+        event.preventDefault();
+        if (
+          !validateCategory() &&
+        
+          !validateImage()
+        ) {
+          submitError.style.direction = "block";
+          submitError.innerHTML = "Please Fix the errors to Register";
+          event.preventDefault();
+          setTimeout(function () {
+            submitError.style.display = "none ";
+          }, 3000);
+          return false;
+        } else if (
+          !validateCategory() ||
+          
+          !validateImage()
+
+        ) {
+          submitError.style.direction = "block";
+          submitError.innerHTML = "Please Enter All Required Fields to Register";
+          event.preventDefault();
+          setTimeout(function () {
+            submitError.style.display = "none ";
+          }, 3000);
+          return false;
+        }
+        else{
+          addform.submit()
+        }
+      }
+
+      function validateCategory() {
+        var category = document.getElementById("categoryName").value.trim();
+        
+
+        if (category.length === 0) {
+          categoryError.innerHTML = "Banner Name is required";
+          return false;
+        }
+
+        if (!category.replace(/\s/g, "").length) {
+          categoryError.innerHTML = "Banner Name cannot be just spaces";
+          return false;
+        } else {
+          categoryError.innerHTML = "";
+          return true;
+        }
+      }
+
+      
+
+      function validateImage() {
+        var imageInput = document.getElementById("preview-image");
+        if (imageInput.files.length === 0) {
+          imageError.innerHTML = "Category image is required";
+          return false;
+        }
+        else {
+          imageError.innerHTML = "";
+          return true;
+        }
+      }
+      
+
+
+    </script>
+
+<%- include('../layouts/adminFooter.ejs')%>

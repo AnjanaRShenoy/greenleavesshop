@@ -1,0 +1,215 @@
+<%- include('../layouts/adminHeader.ejs')%>
+
+
+  <!-- ============================================================== -->
+  <!-- Page wrapper  -->
+  <!-- ============================================================== -->
+
+
+  <div class="container" style="padding-left: 250px;">
+
+
+
+    <section class="ftco-section">
+      <!-- <div class="input-group rounded">
+            <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+            <span class="input-group-text border-0" id="search-addon">
+              <i class="fas fa-search"></i>
+            </span>
+          </div> -->
+      <br>
+      <br>
+      <form id="generate-form" action="/admin/salesReportDownload" method="GET">
+        <div class="form-group">
+          <label for="startDate">Start Date</label>
+          <input type="date" value="" class="form-control" id="startDate" name="startDate" style="width: 150px;"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="endDate">End Date</label>
+          <input type="date" value="" class="form-control" id="endDate" name="endDate" style="width: 150px;" required>
+        </div>
+        <button type="submit" class="btn btn-primary " id="downloadBtn">Download Report</button>
+
+        <!-- <button type="submit" class="btn btn-primary btn_print"><i class="fas fa-file-excel"></i>Download PDF</button> -->
+      </form>
+      
+
+
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-6 text-center mb-5">
+            <h2 class="heading-section">Sales Report</h2>
+          </div>
+        </div>
+
+
+        <div class="row text-center" style="border-color: black;">
+          <!-- <div class="col-md-12">
+					<h4 class="text-center mb-4"></h4> -->
+          <div class="table-wrap ">
+            <table class="table" id="container_content" style="border-color: black;">
+              <thead class="thead-primary" style="border-color: black;">
+                <tr>
+                  <th>User Id</th>
+                  <th>Billing name</th>
+
+                  <th>Quantity</th>
+                  <th>Price</th>
+                  <th>Total</th>
+                  <th>Date</th>
+                  <th>Action</th>
+
+
+                </tr>
+              </thead>
+              <tbody>
+                <% if (orders.length> 0 ) { %>
+                  <% for (let i=0; i < orders.length; i++) { %>
+                    <% if (orders[i].status==="delivered" ) { %>
+                      <tr>
+                        <td>
+                          <%= orders[i]._id %>
+                        </td>
+                        <td>
+                          <%= orders[i].address.name %><br>
+                            <%= orders[i].address.address1 %><br>
+                              <%= orders[i].address.address2 %><br>
+                                <%= orders[i].address.state %>
+                                  <%= orders[i].address.pincode %>
+                        </td>
+
+                        <td>
+                          <% for (let j=0; j < orders[i].orderItems.length; j++) { %>
+                            <p>
+                              <%= orders[i].orderItems[j].kg %>kg
+                            </p>
+                            <% } %>
+                        </td>
+                        <td>
+                          <% for (let j=0; j < orders[i].orderItems.length; j++) { %>
+                            <p>
+                              ₹<%= orders[i].orderItems[j].total %>
+                            </p>
+                            <% } %>
+                        </td>
+
+                        <td>₹ <%= orders[i].finalAmount %>
+                        </td>
+                        <td>
+                          <%= orders[i].dateOrdered.toDateString() %>
+                        </td>
+
+
+                        <td>
+                          <button type="button" class="btn btn-secondary"><a
+                              class="text-light text-decoration-none cancel-link"
+                              href="/admin/orderDetails?id=<%=orders[i]._id %>">View
+                              details</a></button>
+                        </td>
+                      </tr>
+
+
+                      <% } %>
+                        <% } %>
+                          <% } else { %>
+                            <tr>
+                              <td colspan="3">Orders not found</td>
+                            </tr>
+                            <% } %>
+                              <!-- <form action="/admin/salesReportDownload" method="GET" id="downloadForm">
+                <input type="hidden" name="startDate" value="">
+                
+                <input type="hidden" name="endDate" value="" >
+               
+                <button type="submit" class="btn btn-primary" id="downloadBtn">Download Report</button>
+              </form> -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+  </div>
+  <!--  -->
+
+  </section>
+  </div>
+
+  <script>
+    console.log('hello  ')
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('hello  ')
+
+    })
+    // Disable multiple form submissions
+    const downloadForm = document.getElementById('downloadForm');
+    const downloadBtn = document.getElementById('downloadBtn');
+    var startDate = new Date(document.getElementById("startDate").value);
+    var endDate = new Date(document.getElementById("endDate").value);
+    downloadForm.addEventListener('submit', () => {
+
+      downloadBtn.disabled = true;
+      downloadBtn.innerText = 'Downloading...';
+    });
+
+
+
+
+    $(document).ready(function ($) {
+      $(document).on('click', '.btn_print', function (event) {
+        event.preventDefault();
+        var element = document.getElementById('container_content');
+        let randomNumber = Math.floor(Math.random() * (10000000000 - 1)) + 1;
+        var opt = {
+          margin: 0,
+          filename: 'SalesReport' + randomNumber + '.pdf',
+          html2canvas: { scale: 10 },
+          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save();
+      });
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const generateForm = document.getElementById('generate-form');
+      generateForm.addEventListener('submit', validateDates);
+
+      function validateDates(e) {
+        e.preventDefault();
+
+        var startDate = new Date(document.getElementById("startDate").value);
+        var endDate = new Date(document.getElementById("endDate").value);
+
+        if (endDate < startDate) {
+          // Show the custom alert box
+          //   document.getElementById("customAlert").style.display = "block";
+          console.log('Invalid Date');
+          alert('Invalid Date'); // Change to sweet-alert
+          return false; // Prevent form submission
+        } else {
+          console.log('Valid Date');
+          generateForm.submit();
+          return true; // Allow form submission
+        }
+      }
+    })
+
+
+
+    function hideAlert() {
+      // Hide the custom alert box
+      document.getElementById("customAlert").style.display = "none";
+    }
+  </script>
+
+
+
+
+
+  </body>
+
+  <%- include('../layouts/adminFooter.ejs')%>

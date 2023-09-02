@@ -1,203 +1,255 @@
-
 <%- include('../layouts/adminHeader.ejs')%>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<main class="main-wrap" style="padding-left: 300px;">
+
+  <section class="content-main">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center mb-5">
+          <h2 class="heading-section">DashBoard</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3">
+          <div class="card card-body mb-4">
+            <article class="icontext">
+              <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
+              <div class="text">
+                <h6 class="mb-1 card-title">Revenue</h6>
+                <span>₹<%= orders.totalPriceSum %></span>
+                <span class="text-sm">
+                </span>
+              </div>
+            </article>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="card card-body mb-4">
+            <article class="icontext">
+              <span class="icon icon-sm rounded-circle bg-success-light"><i class="text-success material-icons md-local_shipping"></i></span>
+              <div class="text">
+                <h6 class="mb-1 card-title">Orders</h6> <span>
+                  <%=orders.count %>
+                </span>
+                <span class="text-sm">
+                </span>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="col-lg-3">
+          <div class="card card-body mb-4">
+            <article class="icontext">
+              <span class="icon icon-sm rounded-circle bg-warning-light"><i class="text-warning material-icons md-qr_code"></i></span>
+              <div class="text">
+                <h6 class="mb-1 card-title">Products</h6> <span>
+                  <%=productsCount%>
+                </span>
+                <span class="text-sm">
+                  in <%= categoryCount %> categories
+                </span>
+              </div>
+            </article>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="card card-body mb-4">
+            <article class="icontext">
+              <span class="icon icon-sm rounded-circle bg-info-light"><i class="text-info material-icons md-shopping_basket"></i></span>
+              <div class="text">
+                <h6 class="mb-1 card-title">Online Earning</h6> <span>₹<%= onlinePay.totalPriceSum
+                                            %></span>
+                <span class="text-sm">
+                  from <%= onlinePay.count %> orders
+                </span>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+      <!-- <canvas id="salesChart">
+        </canvas> -->
+
+      <div class="row">
+        <div class="col-xl-8 col-lg-12">
+          <div class="card mb-4">
+            <article class="card-body">
+              <h5 class="card-title">Sale statistics</h5>
+              <canvas id="salesChart" height="120px"></canvas>
+            </article>
+          </div>
+
+        </div>
+        <div class="col-xl-4 col-lg-12">
+          <div class="card mb-4">
+            <article class="card-body">
+              <h5 class="card-title">Orders Based on date</h5>
+              <canvas id="salesCount" height="217"></canvas>
+            </article>
+          </div>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-6 col-lg-8">
+          <div class="card mb-4">
+            <article class="card-body">
+              <h5 class="card-title">Category Sales</h5>
+              <canvas id="myPieChart" height="100px"></canvas>
+            </article>
+          </div>
 
 
-        <!-- ============================================================== -->
-        <!-- Page wrapper  -->
-        <!-- ============================================================== -->
-        <div class="page-wrapper">
-            <!-- ============================================================== -->
-            <!-- Bread crumb and right sidebar toggle -->
-            <!-- ============================================================== -->
-            <div class="page-breadcrumb bg-white">
-                <div class="row align-items-center">
-                    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                        <h4 class="page-title">Dashboard</h4>
-                    </div>
-                    <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
-                        <div class="d-md-flex">
-                            <ol class="breadcrumb ms-auto">
-                                <!-- <li><a href="#" class="fw-normal">Dashboard</a></li> -->
-                            </ol>
-                            <!-- <a href="https://www.wrappixel.com/templates/ampleadmin/" target="_blank"
-                                class="btn btn-danger  d-none d-md-block pull-right ms-3 hidden-xs hidden-sm waves-effect waves-light text-white">Upgrade
-                                to Pro</a> -->
-                        </div>
-                    </div>
-                </div>
-                <!-- /.col-lg-12 -->
-            </div>
-            <!-- ============================================================== -->
-            <!-- End Bread crumb and right sidebar toggle -->
-            <!-- ============================================================== -->
-            <!-- ============================================================== -->
-            <!-- Container fluid  -->
-            <!-- ============================================================== -->
-            <div class="container-fluid">
-                <!-- ============================================================== -->
-                <!-- Three charts -->
-                <!-- ============================================================== -->
-                <div class="row justify-content-center">
-                    <div class="col-lg-4 col-md-12">
-                        <div class="white-box analytics-info">
-                            <h3 class="box-title">Total Visit</h3>
-                            <ul class="list-inline two-part d-flex align-items-center mb-0">
-                                <li>
-                                    <div id="sparklinedash"><canvas width="67" height="30"
-                                            style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas>
-                                    </div>
-                                </li>
-                                <li class="ms-auto"><span class="counter text-success">659</span></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-12">
-                        <div class="white-box analytics-info">
-                            <h3 class="box-title">Total Page Views</h3>
-                            <ul class="list-inline two-part d-flex align-items-center mb-0">
-                                <li>
-                                    <div id="sparklinedash2"><canvas width="67" height="30"
-                                            style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas>
-                                    </div>
-                                </li>
-                                <li class="ms-auto"><span class="counter text-purple">869</span></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-12">
-                        <div class="white-box analytics-info">
-                            <h3 class="box-title">Unique Visitor</h3>
-                            <ul class="list-inline two-part d-flex align-items-center mb-0">
-                                <li>
-                                    <div id="sparklinedash3"><canvas width="67" height="30"
-                                            style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas>
-                                    </div>
-                                </li>
-                                <li class="ms-auto"><span class="counter text-info">911</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <!-- ============================================================== -->
-                <!-- PRODUCTS YEARLY SALES -->
-                <!-- ============================================================== -->
-                <div class="row">
-                    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
-                        <div class="white-box">
-                            <h3 class="box-title">Products Yearly Sales</h3>
-                            <div class="d-md-flex">
-                                <ul class="list-inline d-flex ms-auto">
-                                    <li class="ps-3">
-                                        <h5><i class="fa fa-circle me-1 text-info"></i>Mac</h5>
-                                    </li>
-                                    <li class="ps-3">
-                                        <h5><i class="fa fa-circle me-1 text-inverse"></i>Windows</h5>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div id="ct-visits" style="height: 405px;">
-                                <div class="chartist-tooltip" style="top: -17px; left: -12px;"><span
-                                        class="chartist-tooltip-value">6</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- ============================================================== -->
-                <!-- RECENT SALES -->
-                <!-- ============================================================== -->
-                <div class="row">
-                    <div class="col-md-12 col-lg-12 col-sm-12">
-                        <div class="white-box">
-                            <div class="d-md-flex mb-3">
-                                <h3 class="box-title mb-0">Recent sales</h3>
-                                <div class="col-md-3 col-sm-4 col-xs-6 ms-auto">
-                                    <select class="form-select shadow-none row border-top">
-                                        <option>March 2021</option>
-                                        <option>April 2021</option>
-                                        <option>May 2021</option>
-                                        <option>June 2021</option>
-                                        <option>July 2021</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table no-wrap">
-                                    <thead>
-                                        <tr>
-                                            <th class="border-top-0">#</th>
-                                            <th class="border-top-0">Name</th>
-                                            <th class="border-top-0">Status</th>
-                                            <th class="border-top-0">Date</th>
-                                            <th class="border-top-0">Price</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td class="txt-oflo">Elite admin</td>
-                                            <td>SALE</td>
-                                            <td class="txt-oflo">April 18, 2021</td>
-                                            <td><span class="text-success">$24</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td class="txt-oflo">Real Homes WP Theme</td>
-                                            <td>EXTENDED</td>
-                                            <td class="txt-oflo">April 19, 2021</td>
-                                            <td><span class="text-info">$1250</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td class="txt-oflo">Ample Admin</td>
-                                            <td>EXTENDED</td>
-                                            <td class="txt-oflo">April 19, 2021</td>
-                                            <td><span class="text-info">$1250</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>4</td>
-                                            <td class="txt-oflo">Medical Pro WP Theme</td>
-                                            <td>TAX</td>
-                                            <td class="txt-oflo">April 20, 2021</td>
-                                            <td><span class="text-danger">-$24</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>5</td>
-                                            <td class="txt-oflo">Hosting press html</td>
-                                            <td>SALE</td>
-                                            <td class="txt-oflo">April 21, 2021</td>
-                                            <td><span class="text-success">$24</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>6</td>
-                                            <td class="txt-oflo">Digital Agency PSD</td>
-                                            <td>SALE</td>
-                                            <td class="txt-oflo">April 23, 2021</td>
-                                            <td><span class="text-danger">-$14</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>7</td>
-                                            <td class="txt-oflo">Helping Hands WP Theme</td>
-                                            <td>MEMBER</td>
-                                            <td class="txt-oflo">April 22, 2021</td>
-                                            <td><span class="text-success">$64</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- ============================================================== -->
-            <!-- End Container fluid  -->
-            <!-- ============================================================== -->
-            
-         
+        </div>
+        <div class="col-xl-6 col-lg-12">
+          <div class="card mb-4">
+            <article class="card-body">
+              <h5 class="card-title">Revenue Based on Payment Methods</h5>
+              <canvas id="barChart" height="217"></canvas>
+            </article>
+          </div>
+
+        </div>
+      </div>
+
+
+
+
+  </section> <!-- content-main end// -->
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+
+
+
 </body>
-<!-- ============================================================== -->
-            <!-- footer -->
-<!-- ============================================================== -->
+
+<script>
+  const datas = JSON.parse(decodeURIComponent('<%- categorySalesJsonEncoded %>'))
+  console.log(datas);
+  const labels = datas.map(item => item.categoryName)
+  const prices = datas.map(item => item.PriceSum)
+
+  const getRandomColor = () => '#' + Math.floor(Math.random() * 16777215).toString(16)
+
+  const contexts = document.getElementById('myPieChart').getContext('2d')
+  const myPieChart = new Chart(contexts, {
+    type: 'pie',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: prices,
+        backgroundColor: datas.map(item => getRandomColor()),
+        borderColor: "white",
+        borderWidth: 1
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Pie Chart'
+      }
+    }
+  })
+</script>
+<script>
+  const salesData = JSON.parse(decodeURIComponent('<%- salesDataJsonEncoded %>'))
+  const data2 = salesData.map(item => item._id)
+  const dailySales = salesData.map(item => item.dailySales)
+  const ctx = document.getElementById('salesChart').getContext('2d')
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: data2,
+      datasets: [{
+        label: 'Daily Sales',
+        data: dailySales,
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  })
+</script>
+
+<script>
+  
+  const salesCount = JSON.parse(decodeURIComponent('<%- salesCountJsonEncoded %>'))
+  const date = salesCount.map(item => item._id)
+  const orderCounts = salesCount.map(item => item.orderCount)
+  const ctxs = document.getElementById('salesCount').getContext('2d')
+  new Chart(ctxs, {
+    type: 'bar',
+    data: {
+      labels: date,
+      datasets: [{
+        label: 'Orders per Date',
+        data: orderCounts,
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true
+        },
+        x: {}
+      }
+    }
+  })
+</script>
+<script>
+    const onlinePay = JSON.parse(decodeURIComponent('<%- onlinePayJsonEncoded %>'))
+    const codPay = JSON.parse(decodeURIComponent('<%- codPayJsonEncoded %>'))
+    const walletPay = JSON.parse(decodeURIComponent('<%- walletPayJsonEncoded %>'))
+   
+  
+    const data = {
+    labels: ['COD', 'RAZORPAY','WALLET'],
+    datasets: [{
+      label: 'Comparison',
+      data: [codPay[0].totalPriceSum, onlinePay[0].totalPriceSum, walletPay[0].totalPriceSum],
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.7)', // Value 1 color
+        'rgba(54, 162, 235, 0.7)', // Value 2 color
+        'rgba(75, 192, 192, 0.7)', // Value 3 color
+      ],
+      borderColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(75, 192, 192, 1)',
+      ],
+      borderWidth: 1
+    }]
+  }
+
+  const context = document.getElementById('barChart').getContext('2d')
+  new Chart(context, {
+    type: 'bar',
+    data: data,
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  })
+</script>
 
 <%- include('../layouts/adminFooter.ejs')%>

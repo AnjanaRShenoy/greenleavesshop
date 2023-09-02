@@ -62,7 +62,15 @@ const userSchema= new mongoose.Schema({
             type:String,
             required:true
         }
-    }]
+    }],
+    wallet:{
+        type:Number,
+        default:0
+    },
+    walletTransaction:{
+        type: Array, 
+        
+    }
 })
 
 module.exports= mongoose.model('User',userSchema)

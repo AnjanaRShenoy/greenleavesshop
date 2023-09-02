@@ -3,6 +3,8 @@ const Category = require("../Model/categoryModel");
 const Product = require("../Model/productModel");
 const Cart = require("../Model/cartModel");
 const Order = require("../Model/orderModel");
+const Coupon = require("../Model/couponModel")
+const Banner= require("../Model/bannerModel")
 
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
@@ -19,7 +21,7 @@ const cart = async (req, res, next) => {
     const userCartData = await Cart.findOne({ user_id: userId }).populate(
       "product.productId"
     );
-
+   
     if (!userCartData) {
       res.send('Add something to cart. <br> <a href="/">Go to homepage</a>');
       return;
@@ -28,6 +30,8 @@ const cart = async (req, res, next) => {
     const productId = userCartData.product.map((data) =>
       data.productId._id.toString()
     );
+    
+
 
     let totalPrice = 0;
     let grandTotal = 0;
@@ -55,6 +59,7 @@ const cart = async (req, res, next) => {
       ProductPrice,
       productId,
       grandTotal,
+      
     });
   } catch (err) {
     next(err);
@@ -136,17 +141,21 @@ const checkout = async (req, res, next) => {
   try {
     const userId = req.session.user_id;
     const user = await User.findOne({ _id: userId });
-    const couponId = req.params.id;
-    const discountedAmount = req.params.discountedAmount;
-    const priceAfterCoupon = req.params.priceafter;
+    const couponId = req.params.id
+
+    // const couponAmount = req.params.couponAmount;
+    // const priceaftercoupon = req.params.priceaftercoupon;
+
+
     const cart = await Cart.findOne({ user_id: req.session.user_id })
 
       .populate("product.productId")
       .exec();
 
     if (!cart || cart.product.length === 0) {
-      return res.redirect("shop/all/p/1");
+      return res.redirect("/shop/all/p/1");
     }
+    const coupon = req.query
 
     let subtotal = 0;
     for (let i = 0; i < cart.product.length; i++) {
@@ -157,7 +166,12 @@ const checkout = async (req, res, next) => {
     for (let i = 0; i < cart.product.length; i++) {
       grandTotal += cart.product[i].total;
     }
-    res.render("checkout", { user: user, cart, grandTotal, subtotal });
+
+    let wallet = user.wallet
+    
+    const encodeWallet = encodeURIComponent(JSON.stringify(wallet))
+    const encodedUser = encodeURIComponent(JSON.stringify(user))
+    res.render("checkout", { user: user, cart, grandTotal, subtotal, encodeWallet, coupon });
   } catch (err) {
     next(err);
   }
@@ -165,10 +179,12 @@ const checkout = async (req, res, next) => {
 
 // to place order from checkout page
 const checkOrder = async (req, res, next) => {
-  console.log("Checkouting...");
+
   try {
     const user = await User.findById(req.session.user_id);
-
+    const couponId = req.body.coupon  
+   
+    
     const cart = await Cart.findOne({ user_id: req.session.user_id })
       .populate({
         path: "product.productId",
@@ -176,14 +192,14 @@ const checkOrder = async (req, res, next) => {
       })
       .select("-price");
 
+
     let updateOperations = [];
     let isAvailable = true;
     for (const item of cart.product) {
       if (item.kg > item.productId.kg) {
-        // isAvailable = false;
+        isAvailable = false;
         break;
       }
-
 
       updateOperations.push({
         updateOne: {
@@ -192,6 +208,7 @@ const checkOrder = async (req, res, next) => {
         },
       });
     }
+
 
     if (!isAvailable)
       return res
@@ -208,6 +225,8 @@ const checkOrder = async (req, res, next) => {
     //       message: "Something went wrong. Please try again later",
     //     });
     const address = user.address.id(req.body.addressId);
+
+
     if (
       address.name &&
       address.phonenumber &&
@@ -220,13 +239,34 @@ const checkOrder = async (req, res, next) => {
       for (let i = 0; i < cart.product.length; i++) {
         grandTotal += cart.product[i].productId.price * cart.product[i].kg;
       }
-      console.log(req.body.paymentType);
+      let couponAmoun = 0;
+      let finalAmount = grandTotal;
+
+      if (couponId !== "") {
+        
+        await Coupon.updateOne(
+          { _id: new mongoose.Types.ObjectId(couponId) },
+          { $push: { user: user._id } }
+        );
+        
+        const coupons = await Coupon.findById({
+          _id: new mongoose.Types.ObjectId(couponId),
+        });
+        
+        couponAmoun = coupons.couponAmount;        
+        finalAmount = grandTotal - couponAmoun;
+        
+      }
+
       const newOrder = new Order({
         user_id: req.session.user_id,
         address,
         orderItems: cart.product,
         grandTotal: grandTotal,
+        couponAmount: couponAmoun,
+        finalAmount: finalAmount,
         paymentMethod: req.body.paymentType,
+
       });
       if (req.body.paymentType === "Cash On Delivery") {
         newOrder.status = "Ordered";
@@ -236,23 +276,30 @@ const checkOrder = async (req, res, next) => {
           { orderItems: [] }
         );
         const deleteCart = await Cart.deleteOne({ user_id: req.session.user_id });
-        res.status(200).json({ success: true, url: `/orders/${order._id}` });
+
+        res.status(200).json({ success: true, url: `/orderDetails/${order._id}` });
         return;
-      } else if (paymentType === "Razorpay") {
-        console.log("INside RAzorpay")
-        const order = await Order.create(newOrder);
-        const amount = parseInt(order.grandTotal * 100);
-        const razorpayOrder = await razorpay.orders.create({
-          amount,
-          currency: "INR",
-          receipt: order._id.toString(),
-        });
+      }
+      else if (req.body.paymentType === "Wallet") {
+        newOrder.status = "Ordered";
+        await newOrder.save();
+
+        const walletTransaction ={
+          date:new Date(),
+          type:"Debit",
+          amount:finalAmount,
+        }
+        const user= await User.findOneAndUpdate(
+          {_id: req.session.user_id},
+          {$push:{walletTransaction:walletTransaction}},
+          {new:true})
+        
+        const orderId = newOrder._id;
+        const deleteCart = await Cart.deleteOne({ user_id: req.session.user_id });
+        res.status(200).json({ success: true, url: `/orderDetails/${orderId}` });
       }
 
-      await newOrder.save();
-      const orderId = newOrder._id;
-      const deleteCart = await Cart.deleteOne({ user_id: req.session.user_id });
-      res.status(200).json({ success: true, orderId });
+
     } else {
       console.log("no address");
       res.status(200).json({ success: false });

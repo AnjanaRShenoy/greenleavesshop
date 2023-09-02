@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 
+
 const orderSchema= new mongoose.Schema({
     user_id:{
         type:mongoose.Schema.Types.ObjectId,
@@ -50,6 +51,14 @@ const orderSchema= new mongoose.Schema({
         type:Number,
         required:true
     },
+    couponAmount:{
+        type:Number,
+        
+    },
+    finalAmount:{
+        type:Number,
+        
+    },
     status:{
         type:String,
         default:"pending"
@@ -67,6 +76,7 @@ const orderSchema= new mongoose.Schema({
         type:Date,
         required:false
     }
+    
 
 })
 

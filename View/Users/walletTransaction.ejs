@@ -1,0 +1,81 @@
+<%- include('../layouts/userHeader.ejs')%>
+    <div class="container" style="border-color: black; padding-right: 20px;">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-5">
+                <h2 class="heading-section">Wallet transactions</h2>
+            </div>
+        </div>
+    </div>
+    <div class="container"  >
+        <div class="row justify-content-center" >
+            <div class="col-md-6 text-center mb-5 " >
+                <h2 class="heading-section" style="font-size: 20px; color: green;">Wallet amount</h2>
+                <h2 class="heading-section" style="font-size: 20px; color: green;">₹<%=user.wallet%></h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <!-- <div class="col-md-12">
+              <h4 class="text-center mb-4"></h4> -->
+        <div class="table-wrap" style="padding-left: 300px;">
+            <table class="table" style="border-color: black;">
+                <thead class="thead-primary">
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Transaction type</th>
+
+                        <!-- <th>Status</th>  -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <%for(let i=0;i<user.walletTransaction.length;i++){%>
+                        <tr>
+                           
+                            <td>
+                                <%=user.walletTransaction[i].date.toLocaleString()%>                           
+                            </td>
+                            <td>
+                                ₹<%=user.walletTransaction[i].amount%>                           
+                            </td>
+                            <td>
+                                <%=user.walletTransaction[i].type%>                           
+                            </td>
+                            
+                                                    
+                        </tr>
+                        <% } %> 
+                        
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    
+    <br>
+    <section class="ftco-section ftco-no-pt ftco-no-pb py-5 bg-light"
+        style="border: 1px solid black; margin-top: -2px;">
+        <div class="container py-4">
+            <div class="row d-flex justify-content-center py-5">
+                <div class="col-md-6">
+                    <h2 style="font-size: 22px;" class="mb-0">Subcribe to our Newsletter</h2>
+                    <span>Get e-mail updates about our latest shops and special offers</span>
+                </div>
+                <div class="col-md-6 d-flex align-items-center">
+                    <form action="#" class="subscribe-form">
+                        <div class="form-group d-flex">
+                            <input type="text" class="form-control" placeholder="Enter email address">
+                            <input type="submit" value="Subscribe" class="submit px-3">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <%- include('../layouts/userFooter.ejs')%>
