@@ -81,7 +81,7 @@ user_route.get('/forgot-password',preventCache,auth.isLogout,userController.forg
 
 user_route.post('/forgot-password',userController.resetpassword)
 
-user_route.get('/shop',preventCache,auth.isLogin,userController.shop)
+user_route.get('/shop',preventCache,auth.isLogin,userController.shopWithQuery)
 user_route.get('/shop/:category/p/:page',preventCache,auth.isLogin,userController.shop)
 
 user_route.get('/sortLow/',preventCache,auth.isLogin,userController.sortLow)

@@ -431,6 +431,61 @@ const profileAddressAdd = async (req, res, next) => {
   }
 };
 
+const shopWithQuery = async (req, res, next) => {
+  try {
+    // const CATEGORY = ['All', 'Fruits', 'Vegetables', 'Dried Fruits'];
+    // const SORT = ['asc', 'desc'];
+    const page = req.query.page ?? 1;
+    const limit = req.query.limit ?? 8;
+    const sort = req.query.sort ?? "asc";
+    const category = req.query.category ?? "All";
+
+    const unblockedCategories = await Category.find({ categoryBlock: false })
+      .lean()
+      .exec();
+
+    const isCategoryUnblocked =
+      unblockedCategories.findIndex((c) => c.categoryName === category) !== -1;
+
+    if (category !== "All" && !isCategoryUnblocked) {
+      res.render("Invalid category"); // TODO - Change this
+      return;
+    }
+
+    const filter = category === "All" ? {} : { categoryName: category };
+    const numOfItemsToBeSkipped = (page - 1) * limit;
+    const sortParams = { price: sort === "asc" ? 1 : -1 };
+
+    const productsData = await Product.find(filter, { productDescription: 0 })
+      .sort(sortParams)
+      .skip(numOfItemsToBeSkipped)
+      .limit(limit)
+      .lean()
+      .exec();
+
+    if (productsData.length === 0) {
+      res.send("No products found"); // TODO - change this
+      return;
+    }
+
+    const totalCount = await Product.countDocuments(filter);
+    const totalPages = Math.ceil(totalCount / limit);
+
+    console.log(productsData);
+
+    res.render("shop", {
+      productsData: productsData,
+      categories: unblockedCategories,
+      currentPage: page,
+      totalPages: totalPages,
+      category,
+    });
+  } catch (err) {
+    console.trace(err); // REMOVE THIS LINE
+    next(err);
+  }
+};
+
 // to render shop from home page
 const shop = async (req, res, next) => {
   try {
@@ -747,10 +802,8 @@ const orderFullDetails = async (req, res, next) => {
 const walletTransaction = async (req, res, next) => {
   try {
     const userId = req.session.user_id;
-    const user = await User.findOne({ _id: userId })
-    .sort({ dateOrdered: -1 });;
-    res.render("walletTransaction", { user })
-    
+    const user = await User.findOne({ _id: userId }).sort({ dateOrdered: -1 });
+    res.render("walletTransaction", { user });
   } catch (err) {
     next(err);
   }
@@ -872,6 +925,7 @@ module.exports = {
   forgetpasswordload,
   resetpassword,
   shop,
+  shopWithQuery,
   sortLow,
   sortHigh,
   singleproduct,
