@@ -68,7 +68,7 @@
                               </span>
 
                               <input type="text" id="" class="form-control quantity"
-                                value="<%= userCartData.product[i].kg %>" />
+                                value="<%= userCartData.product[i].kg %>" readonly />
                               <span class="input-group-btn">
                                 <button class="btn btn-default plus-btn"
                                   onclick="('<%= userCartData.product[i].productId._id %>','<%= i %>')" type="button">
@@ -203,7 +203,7 @@
     <% } else { %>
       <div class="text-center">
         <h2>Cart is empty
-          <p><a href="/shop/all/p/1" id="shop" class="btn btn-primary py-3 px-4">Continue shopping</a></p>
+          <p><a href="/shop" id="shop" class="btn btn-primary py-3 px-4">Continue shopping</a></p>
           <p id="messageStock"></p>
       </div>
       </h2>

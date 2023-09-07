@@ -1,0 +1,133 @@
+<%- include('../layouts/userHeader.ejs')%>
+
+    <div class="hero-wrap hero-bread" style="background-image: url('/images/bg_1.jpg')">
+        <div class="container">
+            <div class="row no-gutters slider-text align-items-center justify-content-center">
+                <div class="col-md-9 ftco-animate text-center">
+                    <p class="breadcrumbs">
+                        <span class="mr-2"><a href="index.html"></a></span>
+                    </p>
+                    <h1 class="mb-0 bread">My WishList</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-12">
+
+                <table class="table">
+                    <thead class="thead-primary">
+                        <tr class="text-center">
+                            <th>&nbsp;</th>
+                            <th>Product name</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+
+
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+
+                        <% for(let i=0;i<userData.length;i++){%>
+
+                            <tr class="text-center container-item">
+                                <td class="image-prod">
+                                    <div class="img"
+                                        style="background-image:url(/images/<%= userData[i].productId.productImage[0] %>)">
+                                    </div></a>
+                                </td>
+                                <td class="product-name">
+                                    <h3>
+                                        <%= userData[i].productId.productName %>
+                                    </h3>
+                                </td>
+                                <td class="product-name">
+                                    <h3> ₹<%= userData[i].productId.price %>
+                                    </h3>
+                                </td>
+                                <td class="product-name">
+                                    <h3> Only <%= userData[i].productId.kg %> kg left.
+                                    </h3>
+                                    <h3>Grab fast!!</h3>
+                                </td>
+
+
+                                <style>
+                                    .product-remove a {
+                                        display: inline-block;
+                                        position: relative;
+                                        outline: none;
+                                        /* Add this line to remove the focus outline */
+                                    }
+
+                                    .product-remove a img {
+                                        width: 20px;
+                                        height: 20px;
+                                        transition: transform 0.3s;
+                                    }
+
+                                    .product-remove a:hover img {
+                                        transform: scale(1.2);
+                                    }
+                                </style>
+
+
+                                <td class="product-remove">
+                                    <a href="/unwishItem?id=<%= userData[i]._id %>">
+                                    <img src="\images\trashcan.png">
+                                    </a>
+                                </td>
+                            </tr>
+                            <%}%>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+
+        <!-- <div class="col-lg-4 mt-5 cart-wrap ftco-animate">
+    <div class="cart-total mb-3">
+      <h3>Coupon Code</h3>
+      <p>Enter your coupon code if you have one</p>
+      <form action="#" class="info">
+        <div class="form-group">
+          <label for="">Coupon code</label>
+          <input type="text" class="form-control text-left px-3" placeholder="">
+        </div>
+      </form>
+    </div>
+    <p><a href="checkout.html" class="btn btn-primary py-3 px-4">Apply Coupon</a></p>
+  </div> -->
+        <!-- <div class="col-lg-4 mt-5 cart-wrap ftco-animate">
+    <div class="cart-total mb-3">
+      <h3>Estimate shipping and tax</h3>
+      <p>Enter your destination to get a shipping estimate</p>
+      <form action="#" class="info">
+        <div class="form-group">
+          <label for="">Country</label>
+          <input type="text" class="form-control text-left px-3" placeholder="">
+        </div>
+        <div class="form-group">
+          <label for="country">State/Province</label>
+          <input type="text" class="form-control text-left px-3" placeholder="">
+        </div>
+        <div class="form-group">
+          <label for="country">Zip/Postal Code</label>
+          <input type="text" class="form-control text-left px-3" placeholder="">
+        </div>
+      </form>
+    </div>
+    <p><a href="checkout.html" class="btn btn-primary py-3 px-4">Estimate</a></p>
+  </div> -->
+
+
+
+        <%- include('../layouts/userFooter.ejs')%>

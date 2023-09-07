@@ -4,6 +4,8 @@ const Product = require("../Model/productModel");
 const Cart = require("../Model/cartModel");
 const Order = require("../Model/orderModel");
 const Banner = require("../Model/bannerModel");
+const WishList = require("../Model/wishListModel");
+
 
 const dashboardHelper = require("../helper/dashboardHelper");
 
@@ -19,6 +21,7 @@ const randormString = require("randomstring");
 const { LEGAL_TCP_SOCKET_OPTIONS } = require("mongodb");
 const { name } = require("ejs");
 const categoryModel = require("../Model/categoryModel");
+
 
 // to render the guest user page
 const guestUser = async (req, res, next) => {
@@ -252,7 +255,8 @@ const verifylogin = async (req, res, next) => {
 const loadHome = async (req, res, next) => {
   try {
     const productsData = await Product.find({ productBlock: false });
-    const banner = await Banner.find({ isActive: true });
+    const banner = await Banner.find({ isActive: true })
+    
 
     res.render("home", { productsData: productsData, banner });
   } catch (err) {
@@ -487,121 +491,125 @@ const shopWithQuery = async (req, res, next) => {
 };
 
 // to render shop from home page
-const shop = async (req, res, next) => {
-  try {
-    const ITEMS_PER_PAGE = 8;
-    const category = req.params.category;
+// const shop = async (req, res, next) => {
+//   try {
+//     const ITEMS_PER_PAGE = 8;
+//     const category = req.params.category;
 
-    const filter = { productBlock: false };
-    const categories = await Category.find({ categoryBlock: false });
+//     const filter = { productBlock: false };
+//     const categories = await Category.find({ categoryBlock: false });
 
-    if (category !== "all") filter.categoryName = category;
+//     if (category !== "all") filter.categoryName = category;
 
-    const page = parseInt(req.params.page) || 1;
-    const skipItems = (page - 1) * ITEMS_PER_PAGE;
+//     const page = parseInt(req.params.page) || 1;
+//     const skipItems = (page - 1) * ITEMS_PER_PAGE;
 
-    const totalCount = await Product.countDocuments(filter);
+//     const totalCount = await Product.countDocuments(filter);
 
-    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+//     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
-    const productsData = await Product.find(filter)
-      .skip(skipItems)
-      .limit(ITEMS_PER_PAGE);
+//     const productsData = await Product.find(filter)
+//       .skip(skipItems)
+//       .limit(ITEMS_PER_PAGE);
 
-    res.render("shop", {
-      productsData: productsData,
-      categories: categories,
-      currentPage: page,
-      totalPages: totalPages,
-      category,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+//     res.render("shop", {
+//       productsData: productsData,
+//       categories: categories,
+//       currentPage: page,
+//       totalPages: totalPages,
+//       category,
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 
-//to sort Low to high
-const sortLow = async (req, res, next) => {
-  try {
-    const ITEMS_PER_PAGE = 8;
+// //to sort Low to high
+// const sortLow = async (req, res, next) => {
+//   try {
+//     const ITEMS_PER_PAGE = 8;
 
-    const category = req.params.category;
+//     const category = req.params.category;
 
-    const filter = { productBlock: false };
-    const categories = await Category.find({ categoryBlock: false });
+//     const filter = { productBlock: false };
+//     const categories = await Category.find({ categoryBlock: false });
 
-    if (category !== "all") filter.categoryName = category;
+//     if (category !== "all") filter.categoryName = category;
 
-    const page = parseInt(req.params.page) || 1;
-    const skipItems = (page - 1) * ITEMS_PER_PAGE;
+//     const page = parseInt(req.params.page) || 1;
+//     const skipItems = (page - 1) * ITEMS_PER_PAGE;
 
-    const totalCount = await Product.countDocuments(filter);
+//     const totalCount = await Product.countDocuments(filter);
 
-    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+//     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
-    const productsData = await Product.find(filter)
-      .sort({ price: 1 })
-      .skip(skipItems)
-      .limit(ITEMS_PER_PAGE);
+//     const productsData = await Product.find(filter)
+//       .sort({ price: 1 })
+//       .skip(skipItems)
+//       .limit(ITEMS_PER_PAGE);
 
-    res.render("shop", {
-      productsData: productsData,
-      categories: categories,
-      currentPage: page,
-      totalPages: totalPages,
-      category,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+//     res.render("shop", {
+//       productsData: productsData,
+//       categories: categories,
+//       currentPage: page,
+//       totalPages: totalPages,
+//       category,
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 
-//to sort high to low
-const sortHigh = async (req, res, next) => {
-  try {
-    const ITEMS_PER_PAGE = 8;
+// //to sort high to low
+// const sortHigh = async (req, res, next) => {
+//   try {
+//     const ITEMS_PER_PAGE = 8;
 
-    const category = req.params.category;
+//     const category = req.params.category;
 
-    const filter = { productBlock: false };
-    const categories = await Category.find({ categoryBlock: false });
+//     const filter = { productBlock: false };
+//     const categories = await Category.find({ categoryBlock: false });
 
-    if (category !== "all") filter.categoryName = category;
+//     if (category !== "all") filter.categoryName = category;
 
-    const page = parseInt(req.params.page) || 1;
-    const skipItems = (page - 1) * ITEMS_PER_PAGE;
+//     const page = parseInt(req.params.page) || 1;
+//     const skipItems = (page - 1) * ITEMS_PER_PAGE;
 
-    const totalCount = await Product.countDocuments(filter);
+//     const totalCount = await Product.countDocuments(filter);
 
-    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+//     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
-    const productsData = await Product.find(filter)
-      .sort({ price: -1 })
-      .skip(skipItems)
-      .limit(ITEMS_PER_PAGE);
+//     const productsData = await Product.find(filter)
+//       .sort({ price: -1 })
+//       .skip(skipItems)
+//       .limit(ITEMS_PER_PAGE);
 
-    res.render("shop", {
-      productsData: productsData,
-      categories: categories,
-      currentPage: page,
-      totalPages: totalPages,
-      category,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+//     res.render("shop", {
+//       productsData: productsData,
+//       categories: categories,
+//       currentPage: page,
+//       totalPages: totalPages,
+//       category,
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 
 // to go to individual product page
 const singleproduct = async (req, res, next) => {
   try {
+    const user_id=req.session.user_id
     const productId = req.query.id;
     const singleProduct = await Product.findOne({ _id: productId });
     const allProducts = await Product.find({});
-
+    const wishList = await WishList.findOne({user_id:user_id, productId:productId})
+    // const productData=wishList.productId.id(productId)
+    const wish=wishList?true:false
     res.render("singleproduct", {
       singleProduct: singleProduct,
       allProducts: allProducts,
+      wish
     });
   } catch (err) {
     next(err);
@@ -671,6 +679,65 @@ const addToCart = async (req, res, next) => {
   }
 };
 
+// to add the wishlist product
+const addToWishList = async (req, res, next) => {
+  try {
+    const userId = req.session.user_id;
+
+    const productId = req.body.productId;
+    const existingProduct = await WishList.findOne({
+      productId: productId,
+    });
+    if (existingProduct) {
+      
+      const unwish = await WishList.findByIdAndDelete({ _id: id });
+    } else {
+   const wishlistdata=new WishList({
+    user_id:userId,
+    productId:productId
+   })
+   await wishlistdata.save()
+  }
+
+
+    res.json({ message: "product added to wishList" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "An error occured while adding the product" });
+    next(err);
+  }
+}
+
+
+// to render the wishlist page
+const wishList = async (req, res, next) => {
+  try {
+    const userId = req.session.user_id;
+    const userData = await WishList.find({ user_id: userId })
+      .populate("productId")
+      .sort({_id:-1})
+
+    res.render('wishList', { userData })
+  } catch (err) {
+    next(err);
+  }
+}
+
+// to delete the item from wishList
+const unwishItem = async (req, res, next) => {
+
+  try {
+    const id = req.query.id;
+    const unwish = await WishList.findByIdAndDelete({ _id: id });
+    res.redirect("wishList");
+
+  } catch (err) {
+    next(err)
+  }
+}
+
+
 // to add address from checkout page
 const addAddress = async (req, res, next) => {
   try {
@@ -711,6 +778,50 @@ const addnewAddress = async (req, res, next) => {
     next(err);
   }
 };
+
+// to render the edit address page
+const editAddress = async (req, res, next) => {
+  try {
+    const userId = req.session.user_id;
+    const id = req.query.id;   
+
+    const userCartData = await User.findOne({ _id: userId },
+      {address:1});
+    const userData=userCartData.address.id(id)
+    
+    res.render('editAddress', { userData })
+      
+  } catch (err) {
+    next(err)
+  }
+}
+
+// to post the edit new address page
+const editNewAddress = async (req, res, next) => {
+  try {
+    const userId = req.session.user_id;
+    const id=req.body.id
+    console.log(userId,id,"oooo");
+    const newAddress = {
+      name: req.body.name,
+      phonenumber: req.body.phonenumber,
+      address1: req.body.address1,
+      address2: req.body.address2,
+      state: req.body.state,
+      pincode: req.body.pincode,
+    };
+    // console.log(address);
+    const user= await User.findById(userId)
+
+    const address=user.address.id(id)
+    address.set(newAddress)
+    await user.save()
+
+    res.redirect("checkout");
+  } catch (err) {
+    next(err)
+  }
+}
 
 // to render the order history of user
 const orderList = async (req, res, next) => {
@@ -903,6 +1014,31 @@ const invoice = async (req, res, next) => {
   }
 };
 
+const searchProduct=async(req,res,next)=>{
+  try{
+    const user = await User.findOne({ _id: req.session.user_id });
+    const search=req.body.search
+    const searchRegex= new RegExp(search,"i")
+    var products=await Product.find({productName:{$regex:searchRegex}})
+
+    if(products.length>0){
+      const userCartData=await Cart.findOne({user_id:req.session.user_id})
+      const cartData=userCartData||{}
+      res.render("shopWithQuery",{
+        productsData:products,
+        categories: "",
+        currentPage: "",
+        totalPages: "",
+        userCartData:cartData,
+        currentCategory:"All"
+    
+      })
+    }
+  }catch(err){
+    next(err)
+  }
+}
+
 module.exports = {
   guestUser,
   loadsignup,
@@ -924,17 +1060,23 @@ module.exports = {
   sendresetpasswordmail,
   forgetpasswordload,
   resetpassword,
-  shop,
+  // shop,
   shopWithQuery,
-  sortLow,
-  sortHigh,
+  // sortLow,
+  // sortHigh,
   singleproduct,
   addToCart,
+  addToWishList,
+  wishList,
+  unwishItem,
   addAddress,
   addnewAddress,
+  editAddress,
+  editNewAddress,
   orderList,
   cancelOrder,
   orderFullDetails,
   walletTransaction,
   invoice,
+  searchProduct,
 };

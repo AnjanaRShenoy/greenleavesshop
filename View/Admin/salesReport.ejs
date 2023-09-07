@@ -6,7 +6,7 @@
   <!-- ============================================================== -->
 
 
-  <div class="container" style="padding-left: 250px;">
+  <div class="container" style="padding-left: 150px;">
 
 
 
@@ -31,7 +31,7 @@
         </div>
         <button type="submit" class="btn btn-primary " id="downloadBtn">Download Report</button>
 
-        <!-- <button type="submit" class="btn btn-primary btn_print"><i class="fas fa-file-excel"></i>Download PDF</button> -->
+        <button type="button" onclick="pdfdownload()"    class="btn btn-primary btn_print"><i class="fas fa-file-excel"></i>Download PDF</button>
       </form>
       
 
@@ -135,6 +135,9 @@
   </section>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+
   <script>
     console.log('hello  ')
     document.addEventListener('DOMContentLoaded', () => {
@@ -155,9 +158,9 @@
 
 
 
-    $(document).ready(function ($) {
-      $(document).on('click', '.btn_print', function (event) {
-        event.preventDefault();
+    function pdfdownload(){
+      
+        console.log("Entered")
         var element = document.getElementById('container_content');
         let randomNumber = Math.floor(Math.random() * (10000000000 - 1)) + 1;
         var opt = {
@@ -168,8 +171,11 @@
         };
 
         html2pdf().set(opt).from(element).save();
-      });
-    });
+      }
+        
+        
+      
+    
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>

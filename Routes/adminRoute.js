@@ -92,7 +92,7 @@ admin_route.get('/bannerList', preventCache, auth.isLogin, adminController.banne
 
 admin_route.get('/addBannerLoad',preventCache, auth.isLogin,adminController.addBannerLoad)
 
-admin_route.post('/bannerAdd',multer.upload.array('bannerImage',1),adminController.bannerAdd)
+admin_route.post('/bannerAdd',multer.upload.array('bannerImage',3),adminController.bannerAdd)
 
 admin_route.get('/blockBanner',preventCache,auth.isLogin,adminController.blockBanner)
 
@@ -100,7 +100,7 @@ admin_route.get('/unblockBanner',preventCache,auth.isLogin,adminController.unblo
 
 admin_route.get('/editBannerLoad',preventCache,auth.isLogin,adminController.editBannerLoad)
 
-admin_route.post('/editBanner',multer.upload.array('bannerImage',1),adminController.editBanner)
+admin_route.post('/editBanner',multer.upload.array('bannerImage',3),adminController.editBanner)
 
 admin_route.get('/salesReport',preventCache,auth.isLogin,adminController.salesReportLoad)
 admin_route.get('/salesReport/:orders/p/:page',preventCache,auth.isLogin,adminController.salesReportLoad)

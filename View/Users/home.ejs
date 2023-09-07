@@ -1,50 +1,27 @@
 <%- include('../layouts/userHeader.ejs')%>
 
-	<section id="home-section" class="hero">
-		<div class="home-slider owl-carousel">
-			<div class="slider-item">
-				<% banner.forEach(function(item) { %>
-					<div class="carousel-item position-relative active" style="height: 640px;">
-						<img class="position-absolute w-100 h-100" src="/images/<%= item.bannerImage %>"
-							style="object-fit: cover;">
-
-						<div class="overlay"></div>
-						<div class="container">
-							<div class="row slider-text justify-content-center align-items-center"
-								data-scrollax-parent="true">
-
-								<div class="col-md-12 ftco-animate text-center">
-
-									<h1 class="mb-2">
-										<%=item.link %>
-									</h1>
-									<!-- <h2 class="subheading mb-4">We deliver organic vegetables &amp; fruits</h2>
-									<p><a href="#" class="btn btn-primary">View Details</a></p> -->
-								</div>
-								
 
 
-							</div>
-						</div>
-					</div>
-					<%})%>
+<section id="home-section" class="hero">		
+	<div class="home-slider owl-carousel">	
+		<% for(var i=0;i<banner[0].bannerImage.length;i++) { %>
+	<div class="slider-item" style="background-image: url(/images/<%= banner[0].bannerImage[i] %>);">
+		<div class="overlay"></div>
+	  <div class="container">				
+		<div class="row slider-text justify-content-center align-items-center" data-scrollax-parent="true">		
 
-					<!-- <div class="slider-item" style="background-image: url(images/bg_2.jpg);">
-	      	<div class="overlay"></div>
-	        <div class="container">
-	          <div class="row slider-text justify-content-center align-items-center" data-scrollax-parent="true">
-
-	            <div class="col-sm-12 ftco-animate text-center">
-	              <h1 class="mb-2">100% Fresh &amp; Organic Foods</h1>
-	              <h2 class="subheading mb-4">We deliver organic vegetables &amp; fruits</h2>
-	              <p><a href="#" class="btn btn-primary">View Details</a></p>
-	            </div> -->
-
-			</div>
+		  <div class="col-md-12 ftco-animate text-center">
+			<h1 class="mb-2"> <%=banner[0].link %> </h1>
+			
+			<p><a href="/shop" class="btn btn-primary">View Details</a></p>
+		  </div>
 		</div>
-		</div>
-		</div>
+	  </div>
+	</div>
+	<%}%>
+	</div>
 	</section>
+
 
 	<section class="ftco-section">
 		<div class="container">
@@ -205,7 +182,7 @@
 		<div class=" justify-content-center d-flex">
 
 
-			<p class="text-center"><a href="/shop/all/p/1" class="btn btn-primary ">Show more products</a></p>
+			<p class="text-center"><a href="/shop" class="btn btn-primary ">Show more products</a></p>
 
 		</div>
 

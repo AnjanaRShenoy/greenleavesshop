@@ -7,12 +7,13 @@ const APP_PASSWORD=process.env.APP_PASSWORD
 const RAZORPAY_ID_KEY= process.env.RAZORPAY_ID_KEY
 const RAZORPAY_SECRET_KEY = process.env.RAZORPAY_SECRET_KEY
 
+// const SERVERSTART= process.env.SERVERSTART
 
 const serverStart = async(req,res) => {
 
   try{const mongoose = require("mongoose");
 
-  mongoose.connect("mongodb://127.0.0.1:27017/GardentoTable", {});}
+  mongoose.connect("mongodb+srv://anjanashenoy:MtT8WJ7g3EJfOcdd@cluster0.aywzstg.mongodb.net/", {});}
   catch(error){
     console.log(error);
   }  

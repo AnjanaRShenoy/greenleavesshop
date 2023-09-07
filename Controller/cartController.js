@@ -250,7 +250,7 @@ const checkOrder = async (req, res, next) => {
         );
         
         const coupons = await Coupon.findById({
-          _id: new mongoose.Types.ObjectId(couponId),
+          
         });
         
         couponAmoun = coupons.couponAmount;        

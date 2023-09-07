@@ -27,7 +27,7 @@
           <div name="address_id" id="selectAddress">
             <% for(let i=0;i<user.address.length;i++){ %>
             <div class="border border-secondary p-2 mt-2 rounded d-flex gap-2 ">
-
+              
               <div>
                 <input type="radio" name="address" id="address<%= i %>" value="<%= user.address[i]._id%>" <%=i===0
                       ? "checked" : "" %>>
@@ -69,7 +69,7 @@
                   </p>
                 </div>
               </div>
-
+              <a href="/editAddress?id=<%= user.address[i]._id %>" class="nav-link"><img src="images/edit-logo.jpg" style="width: 25px; height: 20px;"></span></a>
             </div>
             <% } %>
           </div>
@@ -125,7 +125,7 @@
                   <% } else { %>
                   <% coupon.couponAmount=0 %>
                   <span>
-                    <%= coupon.couponAmount %>
+                    ₹<%= coupon.couponAmount %>
                   </span>
                   <% } %>
                 </p>
@@ -136,12 +136,12 @@
                   <span>
                     <% if(coupon && coupon.couponAmount !==undefined){ %>
                     <span id="totalValues" name="amount" data-amount="<%= priceaftercoupon=subtotal - coupon.couponAmount; %>">
-                      <%= priceaftercoupon=subtotal - coupon.couponAmount; %>
+                      ₹<%= priceaftercoupon=subtotal - coupon.couponAmount; %>
                     </span>
                     <% } else {%>
                     <% coupon.couponAmount=0 %>
                     <span id="totalValues" name="amount" data-amount="<%= priceaftercoupon=subtotal %>">
-                      <%= priceaftercoupon=subtotal %>
+                      ₹<%= priceaftercoupon=subtotal %>
                     </span>
                     <% } %>
                   </span>

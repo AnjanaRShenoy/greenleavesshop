@@ -18,7 +18,7 @@
       <div class="col-lg-6 d-flex gap-1">
 
         <div class="">
-          <% singleProduct.productImage.forEach(function(image) { %>
+          <% singleProduct?.productImage.forEach(function(image) { %>
           <div class="my-5">
             <img onclick="change_image(this)" src="/images/<%=image%>" width="100" height="100" style="border: 1px solid rgba(128, 128, 128, 0.386);" class="thumbnail" />
           </div>
@@ -36,7 +36,26 @@
         <h3>
           <%= singleProduct.productName %>
         </h3>
+
+        
+        
         <div class="rating d-flex">
+          
+          <a href="" class="heart d-flex justify-content-center align-items-center " onclick="showAddtoWishListConfirmation(event, '<%= singleProduct?._id %>')" >
+	    									<span>
+                          <% if(wish){%>
+                            <i class="ion-ios-heart"  style="width: 20px;height: 30px; color: red ;"></i>
+                            <%} else{%>
+                              <i class="ion-ios-heart"  style="width: 20px;height: 30px; color: gray ;"></i>
+                              <% } %>
+                            </span>
+	    								</a>
+                      
+                    
+                      <!-- <a href="" class="heart d-flex justify-content-center align-items-center " onclick="showAddtoWishListConfirmation(event, '<%= singleProduct?._id %>')" >
+	    									<span><i class="ion-ios-heart" style="width: 20px;height: 30px; color: black ;"></i></span>
+	    								</a> -->
+                    
           <!-- <p class="text-left mr-4">
 							<a href="#" class="mr-2">5.0</a>
 							<a href="#"><span class="ion-ios-star-outline"></span></a>
@@ -52,6 +71,7 @@
 							<a href="#" class="mr-2" style="color: #000;">500 <span style="color: #bbb;">Sold</span></a>
 						</p> -->
         </div>
+        
         <p class="price"><span>₹<%= singleProduct.price %></span></p>
         <p class="description"><span>
             <%= singleProduct.productDescription %>
@@ -93,11 +113,12 @@
             <p style="color: #000;"></p>
           </div>
         </div>
-        <p><a href="" class="btn btn-black py-3 px-5" onclick="showAddtoCartConfirmation(event, '<%= singleProduct._id %>','<%= singleProduct.kg %>', parseInt(document.getElementById('countInput').value))">Add
+        <p><a href="" class="btn btn-black py-3 px-5" onclick="showAddtoCartConfirmation(event, '<%= singleProduct._id %>','<%= singleProduct?.kg %>', parseInt(document.getElementById('countInput').value))">Add
             to Cart</a></p>
 
 
         <p><a href="/cart" class="btn btn-black py-3 px-5">Go to Cart</a></p>
+        
       </div>
 
     </div>
@@ -342,6 +363,7 @@
             addToCartRequest(event, productId, count)
           }
         })
+        
     }
   }
 
@@ -371,7 +393,7 @@
       .then((response) => {
 
         var cartCount = parseInt(document.getElementById("cartCount").innerText)
-        console.log(document.getElementById("cartCount").innerText);
+        
         document.getElementById("cartCount").innerText = cartCount + 1
         addButton.disabled = false
       })
@@ -379,5 +401,27 @@
         console.error("Error adding product to cart:", error)
         addButton.disabled = false
       })
+  }
+
+  function showAddtoWishListConfirmation(event, productId) {
+    event.preventDefault()    
+  
+    var addButton = event.target
+ 
+    addButton.disabled = true
+
+    var data = {
+      productId: productId      
+    }    
+
+    fetch("/addToWishList", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data),
+      })
+
+      
   }
 </script>

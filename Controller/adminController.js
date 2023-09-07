@@ -399,6 +399,7 @@ const editCategory = async (req, res, next) => {
 // to edit the category
 const categoryEdit = async (req, res, next) => {
   try {
+    
     const id = req.body.id;
     const currentCategory = await Category.findOne({ _id: id });
     let categoryOffer = req.body.categoryOffer;

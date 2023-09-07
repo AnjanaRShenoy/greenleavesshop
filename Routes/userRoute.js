@@ -82,12 +82,8 @@ user_route.get('/forgot-password',preventCache,auth.isLogout,userController.forg
 user_route.post('/forgot-password',userController.resetpassword)
 
 user_route.get('/shop',preventCache,auth.isLogin,userController.shopWithQuery)
-user_route.get('/shop/:category/p/:page',preventCache,auth.isLogin,userController.shop)
 
-user_route.get('/sortLow/',preventCache,auth.isLogin,userController.sortLow)
-user_route.get('/sortLow/:category/p/:page',preventCache,auth.isLogin,userController.sortLow)
-user_route.get('/sortHigh',preventCache,auth.isLogin,userController.sortHigh)
-user_route.get('/sortHigh/:category/p/:page',preventCache,auth.isLogin,userController.sortHigh)
+user_route.post('/search',userController.searchProduct)
 
 user_route.get('/userProfile',preventCache,auth.isLogin,userController.userProfile)
 
@@ -96,6 +92,12 @@ user_route.post('/userProfile',userController.profileAddressAdd)
 user_route.get('/singleproduct',preventCache,auth.isLogin,userController.singleproduct)
 
 user_route.post("/addtocart",userController.addToCart)
+
+user_route.post("/addToWishList",userController.addToWishList)
+
+user_route.get('/wishList',preventCache,auth.isLogin,userController.wishList)
+
+user_route.get("/unwishItem",preventCache,auth.isLogin,userController.unwishItem)
 
 user_route.get("/cart",preventCache,auth.isLogin,cartController.cart)
 
@@ -108,6 +110,10 @@ user_route.get('/checkout/:id?',preventCache,auth.isLogin,cartController.checkou
 user_route.get('/addAddress',preventCache,auth.isLogin,userController.addAddress)
 
 user_route.post('/addAddress',userController.addnewAddress)
+
+user_route.get('/editAddress',preventCache,auth.isLogin,userController.editAddress)
+
+user_route.post('/editAddress',userController.editNewAddress)
 
 user_route.post('/checkout', cartController.checkOrder)
 
@@ -124,7 +130,7 @@ user_route.get('/orderFullDetails',preventCache,auth.isLogin,userController.orde
 
 user_route.get('/couponLoad',preventCache,auth.isLogin,couponController.couponLoad)
 
-user_route.post('/createOrder', paymentController.createOrder)
+user_route.post('/createOrder', auth.isLogin,paymentController.createOrder)
 
 user_route.post('/verifyPayment', paymentController.verifyPayment)
 
