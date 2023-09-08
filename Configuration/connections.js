@@ -13,7 +13,7 @@ const serverStart = async(req,res) => {
 
   try{const mongoose = require("mongoose");
 
-  mongoose.connect("mongodb+srv://anjanashenoy:MtT8WJ7g3EJfOcdd@cluster0.aywzstg.mongodb.net/", {});}
+  mongoose.connect(process.env.MONGODB_URI, {});}
   catch(error){
     console.log(error);
   }  

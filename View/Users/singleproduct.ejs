@@ -18,11 +18,11 @@
       <div class="col-lg-6 d-flex gap-1">
 
         <div class="">
-          <% singleProduct?.productImage.forEach(function(image) { %>
+          <% for(var i=0; i<3;i++) { %>
           <div class="my-5">
-            <img onclick="change_image(this)" src="/images/<%=image%>" width="100" height="100" style="border: 1px solid rgba(128, 128, 128, 0.386);" class="thumbnail" />
+            <img onclick="change_image(this)" src="/images/<%=singleProduct.productImage[i]%>" width="100" height="100" style="border: 1px solid rgba(128, 128, 128, 0.386);" class="thumbnail" />
           </div>
-          <% }) %>
+          <% } %>
         </div>
 
         <div class="ftco-animate">

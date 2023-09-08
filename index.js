@@ -9,7 +9,7 @@ const errorHandler = require('./middleware/errorHandler');
 const config=require('./Configuration/connections')
 
 const store = new MongoDBStore({
-    uri: 'mongodb://127.0.0.1:27017/GardentoTable',
+    uri: 'mongodb+srv://anjanashenoy:MtT8WJ7g3EJfOcdd@cluster0.aywzstg.mongodb.net/',
     collection: 'sessions'
   });
 
@@ -54,7 +54,7 @@ app.use('/',userRoute)
 
 
 
-app.listen(3000,()=>{
+app.listen(process.env.PORT,()=>{
     console.log("running");
 })
 
